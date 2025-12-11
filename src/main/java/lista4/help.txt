@@ -7,8 +7,7 @@ dołącza do gry
 otrzymuje od serwera kolor pionków (klasa pionek)
 
 
-server ma stan:
-- czekania na użytkowników, 
+gra ma stan:
 - ruch czarnego
 - ruch białego
 - obsługa gry/ruchów/interpretacja inputa
