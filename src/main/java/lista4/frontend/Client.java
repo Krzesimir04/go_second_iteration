@@ -1,4 +1,4 @@
-package lista4;
+package lista4.frontend;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,32 +13,16 @@ public class Client {
 
         try (Socket socket = new Socket(SERVER_ADDRESS, PORT);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                // Scanner in = new Scanner(socket.getInputStream());
                 BufferedReader consoleIn = new BufferedReader(new InputStreamReader(System.in))) {
             Thread listenerThread = new Thread(new ServerListener(socket));
-            listenerThread.start(); // Rozpoczynamy nasłuchiwanie w tle
-            // System.out.println(in.nextLine()); // says Client WHITE or BLACK (who you are
-            // at the game)
+            listenerThread.start(); // new thread is listening
 
             String lineToSend;
 
             while ((lineToSend = consoleIn.readLine()) != null) {
 
-                // 1. Wysyłanie do serwera
+                // this thread is sendint to server
                 out.println(lineToSend);
-
-                // if (lineToSend.equalsIgnoreCase("quit")) {
-                // break;
-                // }
-
-                // 2. Oczekiwanie na odpowiedź
-                // if (in.hasNextLine()) {
-                // String response = in.nextLine();
-                // System.out.println("[Serwer] " + response);
-                // } else {
-                // System.out.println("Serwer zamknął połączenie.");
-                // break;
-                // }
             }
 
         } catch (IOException e) {
@@ -58,11 +42,9 @@ public class Client {
         public void run() {
             try (Scanner in = new Scanner(socket.getInputStream())) {
 
-                // Pętla ciągle nasłuchuje strumienia wejściowego z serwera
+                // listening loop
                 while (in.hasNextLine()) {
                     String message = in.nextLine();
-
-                    // WYŚWIETLANIE ASYNCHRONICZNYCH BROADCASTÓW I SYNC. ODPOWIEDZI
                     System.out.println("\n[Serwer] " + message);
 
                     // Opcjonalnie: Dodaj logikę do przetwarzania specjalnych komunikatów
@@ -71,19 +53,15 @@ public class Client {
                     }
                 }
             } catch (IOException e) {
-                // To jest typowy sposób zakończenia, gdy socket jest zamknięty
-                // z innej strony (np. przez wątek główny po komendzie QUIT)
                 if (!Thread.currentThread().isInterrupted()) {
                     System.err.println("ListenerThread: Błąd odczytu: " + e.getMessage());
                 }
             } finally {
-                // Upewniamy się, że wątek główny też wie o zamknięciu
                 try {
                     if (!socket.isClosed()) {
                         socket.close();
                     }
                 } catch (IOException e) {
-                    // Ignore
                 }
             }
         }

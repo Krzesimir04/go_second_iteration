@@ -1,4 +1,4 @@
-package lista4;
+package lista4.backend;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,7 @@ import lista4.adapters.OutputGameAdapter;
 import lista4.gameInterface.GameInputAdapter;
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.Game;
+import lista4.gameInterface.IOExceptions.WrongMoveFormat;
 
 /**
  * Class responsible for communication between Client and the game.
@@ -41,9 +42,15 @@ class ClientThread implements Runnable {
                 System.out.println("   [Klient " + color + "]: " + clientMessage);
 
                 // send move to INadapter and wait for a message from Outadapter
-                // based on input
-                String response = inAdapter.makeMove(clientMessage);
-                // out.println(response);
+                // based on input try catch inAdaper
+                try {
+                    inAdapter.makeMove(clientMessage);
+                } catch (WrongMoveFormat wrongmove) {
+                    out.println(wrongmove.getMessage());
+                }
+                // catch (NotYourMove e) {
+                // out.println(e.getMessage());
+                // }
                 if (clientMessage.equalsIgnoreCase("quit")) {
                     break;
                 }

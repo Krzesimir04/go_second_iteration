@@ -1,9 +1,9 @@
 package lista4.adapters;
 
 import lista4.gameInterface.GameInputAdapter;
-import lista4.gameInterface.IOExceptions.WrogMoveFormat;
+import lista4.gameInterface.IOExceptions.WrongMoveFormat;
+import lista4.gameInterface.IOExceptions.WrongMoveFormat;
 import lista4.gameLogic.Game;
-import lista4.gameInterface.IOExceptions.WrogMoveFormat;
 
 /**
  * Final adapter for console application
@@ -18,12 +18,12 @@ public class InputGameAdapter implements GameInputAdapter {
         this.game = game;
     }
 
-    public String makeMove(String input) throws WrogMoveFormat {
-        if (input.equals("blad")) {
-            throw new WrongThreadException("zla komenda");
+    public String makeMove(String input) throws WrongMoveFormat {
+        if (input.matches("[a-zA-Z] [1-9]") || input.matches("[a-zA-Z] 1[0-3]")) {
+            String to_ret = game.simulateMove(input);
+            return to_ret;
         }
-        String to_ret = game.simulateMove(input);
-        return to_ret;
+        throw new WrongMoveFormat("zla komenda");
     };
 
 }

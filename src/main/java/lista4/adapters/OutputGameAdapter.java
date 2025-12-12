@@ -24,7 +24,6 @@ public class OutputGameAdapter implements GameOutputAdapter {
     }
 
     public void sendBroadcast(String message) {
-        // Używamy for-each bezpiecznego wątkowo (Iterujemy po values)
         for (PrintWriter out : activeWriters.values()) {
             if (out != null) {
                 out.println("message");
@@ -32,7 +31,7 @@ public class OutputGameAdapter implements GameOutputAdapter {
         }
     }
 
-    public void sendBoard(Board board, String mes) { // wysyła na razie stringa zwykłego
+    public void sendBoard(Board board, String mes) { // wysyła na razie zwykłego stringa
         for (PrintWriter out : activeWriters.values()) {
             if (out != null) {
                 out.println("message: " + mes);
