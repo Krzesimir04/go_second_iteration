@@ -11,4 +11,6 @@ public class Stone {
         this.player = player;
     }
 
+
+
 }

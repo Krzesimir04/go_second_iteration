@@ -16,7 +16,7 @@ public class Board {
     }
 
     public void PutStone(int x, int y, Stone stone){
-        if( !isFieldAvailable(x, y, stone.) )
+
         board[x][y] = stone;
     }
 

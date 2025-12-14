@@ -1,5 +1,7 @@
 package lista4.gameLogic.state;
 
+import lista4.gameLogic.GameContext;
+
 public class BlackMove implements GameStateBehaviour {
 
     @Override
@@ -8,17 +10,18 @@ public class BlackMove implements GameStateBehaviour {
     }
 
     @Override
-    public GameStateBehaviour startGame() {
-        return this;
+    public void startGame(GameContext context) {
+        //Gra rozpoczęta, nic nie robi
     }
 
     @Override
-    public GameStateBehaviour stopGame() {
-        return GameState.GAME_NOT_RUNNING.getStateBehaviour();
+    public void stopGame(GameContext context) {
+        context.setGameState(GameState.GAME_NOT_RUNNING);
     }
 
     @Override
-    public GameStateBehaviour nextPlayer() {
-        return GameState.WHITE_MOVE.getStateBehaviour();
+    public void nextPlayer(GameContext context) {
+        context.setGameState(GameState.WHITE_MOVE);
     }
+
 }

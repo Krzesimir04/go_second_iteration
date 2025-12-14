@@ -1,5 +1,7 @@
 package lista4.gameLogic.state;
 
+import lista4.gameLogic.GameContext;
+
 //TODO Potencjalnie niepotrzebne, sprawdzić, czy nie trza usunąć
 public class ProcessingState implements GameStateBehaviour {
 
@@ -8,18 +10,22 @@ public class ProcessingState implements GameStateBehaviour {
         return GameState.GAME_PROCESSING;
     }
 
+    //Na razie nie używamy tego stanu
+
     @Override
-    public GameStateBehaviour startGame() {
-        return this;
+    public void startGame(GameContext context) {
+
     }
 
     @Override
-    public GameStateBehaviour stopGame() {
-        return GameState.GAME_NOT_RUNNING.getStateBehaviour();
+    public void stopGame(GameContext context) {
+
     }
 
     @Override
-    public GameStateBehaviour nextPlayer() {
-        return this;
+    public void nextPlayer(GameContext context) {
+
     }
+
+
 }

@@ -10,17 +10,18 @@ public class WhiteMove implements GameStateBehaviour {
     }
 
     @Override
-    public GameStateBehaviour startGame(GameContext context) {
-        return null;
+    public void startGame(GameContext context) {
+        //Gra rozpoczęta, więc nic nie robi
     }
 
     @Override
-    public GameStateBehaviour stopGame(GameContext context) {
-        return null;
+    public void stopGame(GameContext context) {
+        context.setGameState(GameState.GAME_NOT_RUNNING);
     }
 
     @Override
     public void nextPlayer(GameContext context) {
-        return GameState.BLACK_MOVE.getStateBehaviour();
+        context.setGameState(GameState.BLACK_MOVE);
     }
+
 }
