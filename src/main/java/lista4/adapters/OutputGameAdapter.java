@@ -6,20 +6,20 @@ import java.util.concurrent.ConcurrentMap;
 
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.Board;
-import lista4.gameLogic.Game;
+import lista4.gameLogic.GameManager;
 
 /**
  * Class uses Observers (ClientThread) to communicate with client
  * It is use in Game to send
  */
-public class OutputGameAdapter implements GameOutputAdapter {
-    private static final ConcurrentMap<Game.Player, PrintWriter> activeWriters = new ConcurrentHashMap<>();
+public class OutputGameAdapter implements GameOutputAdapter<String> {
+    private static final ConcurrentMap<GameManager.Player, PrintWriter> activeWriters = new ConcurrentHashMap<>();
 
-    public void registerClient(Game.Player color, PrintWriter out) {
+    public void registerPlayer(GameManager.Player color, PrintWriter out) {
         activeWriters.put(color, out);
     }
 
-    public void unregisterClient(Game.Player color) {
+    public void unregisterPlayer(GameManager.Player color) {
         activeWriters.remove(color);
     }
 

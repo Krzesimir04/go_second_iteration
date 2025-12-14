@@ -5,11 +5,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-import lista4.adapters.InputGameAdapter;
-import lista4.adapters.OutputGameAdapter;
 import lista4.gameInterface.GameInputAdapter;
 import lista4.gameInterface.GameOutputAdapter;
-import lista4.gameLogic.Game;
+import lista4.gameLogic.GameManager;
 import lista4.gameInterface.IOExceptions.WrongMoveFormat;
 
 /**
@@ -21,9 +19,9 @@ class ClientThread implements Runnable {
     private Socket socket;
     GameInputAdapter inAdapter;
     GameOutputAdapter outAdapter;
-    Game.Player color;
+    GameManager.Player color;
 
-    ClientThread(Socket socket, GameInputAdapter inAdapter, GameOutputAdapter outAdapter, Game.Player color) {
+    ClientThread(Socket socket, GameInputAdapter inAdapter, GameOutputAdapter outAdapter, GameManager.Player color) {
         this.socket = socket;
         this.inAdapter = inAdapter;
         this.outAdapter = outAdapter;
@@ -35,7 +33,7 @@ class ClientThread implements Runnable {
 
         try (Scanner in = new Scanner(socket.getInputStream());
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-            outAdapter.registerClient(color, out);
+            outAdapter.registerPlayer(color, out);
             out.println("WELCOME " + color + ". Waiting for command.");
             while (in.hasNextLine()) {
                 String clientMessage = in.nextLine();

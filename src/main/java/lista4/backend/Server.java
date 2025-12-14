@@ -6,12 +6,11 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import lista4.gameLogic.Game;
+import lista4.gameLogic.GameManager;
 import lista4.gameInterface.GameInputAdapter;
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.adapters.InputGameAdapter;
 import lista4.adapters.OutputGameAdapter;
-import lista4.backend.ClientThread;
 
 /**
  * Server creates a game and both (IN and OUT) adapters
@@ -20,13 +19,13 @@ import lista4.backend.ClientThread;
 public class Server {
     private static int GAMERS_NUMBER = 2;
     private static final int PORT = 12345;
-    public static Game game = Game.getInstance();
+    public static GameManager gameManager = GameManager.getInstance();
 
-    private static GameInputAdapter inAdapter = new InputGameAdapter(game);
-    private static GameOutputAdapter outAdapter = new OutputGameAdapter();
+    private static GameInputAdapter inAdapter = new InputGameAdapter(gameManager);
+    private static GameOutputAdapter outAdapter = new OutputGameAdapter(); // Nie wiem czy to będzie potrzebne w serwerze, ja bym to stworzył w grze
 
     public static void main(String[] args) throws IOException {
-        game.addAdapter(outAdapter);
+        gameManager.addAdapter(outAdapter);
         System.out.println("Wielowątkowy serwer jest uruchomiony na porcie " + PORT + "...");
 
         ExecutorService pool = Executors.newFixedThreadPool(GAMERS_NUMBER);
@@ -39,10 +38,10 @@ public class Server {
                 // przypisanie nowego socketu do wątku,
                 // wątek ma mieć adaptery, a nie grę na razie sprawdzam
                 if (i == 0) {
-                    pool.execute(new ClientThread(clientSocket, inAdapter, outAdapter, Game.Player.BLACK));
+                    pool.execute(new ClientThread(clientSocket, inAdapter, outAdapter, GameManager.Player.BLACK));
                     i = i + 1;
                 } else {
-                    pool.execute(new ClientThread(clientSocket, inAdapter, outAdapter, Game.Player.WHITE));
+                    pool.execute(new ClientThread(clientSocket, inAdapter, outAdapter, GameManager.Player.WHITE));
 
                 }
             }

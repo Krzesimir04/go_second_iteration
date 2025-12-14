@@ -1,0 +1,20 @@
+
+Wyjaśnienie klas:
+
+-GameManager - zarządza mechanizmami w grze. Sprzwdza i wykonuje ruchy, zmienia stany gry.
+-Board - klasa reprezentująca planszę. Można na niej położyć kamień.
+-Stone - kamień - ma Przypisanego gracza i pozycje, mna której się znajduje.
+
+-GameManager.Move - opakowanie ruchu (czyli postawienia kamienia na planszę) w klasę składającą się ze współrzędnych i gracza, który ruch zrobił
+-GameManager.Player - klasa typu enum reprezentuje gracza
+
+
+-Serwer - znajduje się na nim gra, której przekazuje dane od klienta i od niej do klienta.
+-Klient - program, który łączy się z serwerem.
+
+
+różnica między klient a player:
+    - klient to jest program zewnętrzny, który łączy się z serwerem. Gra nie musi wiedzieć czym jest klient.
+    - player(gracz) jest pojęciem, które reprezentuje klienta w klasach związanych z grą (można powiedzieć, że klient wciela się w gracza)
+
+

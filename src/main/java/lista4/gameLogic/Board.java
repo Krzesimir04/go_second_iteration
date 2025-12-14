@@ -8,7 +8,7 @@ public class Board {
         board = new Stone[boardSize][boardSize];
     }
 
-    public boolean isFieldAvailable(int x, int y, Game.Player player){
+    public boolean isFieldAvailable(int x, int y, GameManager.Player player){
         if(x >= 0 && y >= 0 && x < boardSize && y < boardSize){
             return (board[x][y] == null);
         }

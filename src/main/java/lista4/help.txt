@@ -39,8 +39,8 @@ Dopiero gdy jest 2 graczy zmieniamy stan na grywalny
 
 TYLE ŻE GRYWALNE STANY TO BĘDĄ STANY WHITEMOVE I BLACKMOVE i gra wysyła do current state ruch gracza, a stan decyduje czy starać się ruch wykonać czy zwrócić błąd "nie twój ruch, teraz inny gracz" do danego gracza
 
-do game trzeba dodać obsługę stanów
-- czyli game ma setState a w stanach jest obsługa 
+do gameManager trzeba dodać obsługę stanów
+- czyli gameManager ma setState a w stanach jest obsługa
 - stan wysyła message na out jeśli jest błąd
 Przykład z chata jak to wygląda:
 Przykład: RunningState
@@ -75,7 +75,7 @@ Klasa Game (kontekst) nie ma już żadnych if ani switch sprawdzających stan!
 
 Java
 
-// W lista4.gameLogic.Game
+// W lista4.gameLogic.GameManager
 public class Game {
     
     private GameStateBehaviour currentStateBehaviour;

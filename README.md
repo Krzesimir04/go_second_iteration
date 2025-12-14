@@ -1,5 +1,5 @@
 # go
-go game for studies
+go gameManager for studies
 
 # How to run application?
 use mvn package
@@ -13,5 +13,5 @@ mamy Adaptery między serwerem a grą
 --
 Used design patterns:
 - Observer (OutputGameAdapter has map of Observers (Clients) and send's information to them, for example the board after somebodies move)
-- Adapter (It will be easier to extend application - now we added a adapters for go game (one input, one output) with proper methods)
+- Adapter (It will be easier to extend application - now we added a adapters for go gameManager (one input, one output) with proper methods)
 - State (Game has a state when it is waiting for 2 players, white move or black move or stop)
