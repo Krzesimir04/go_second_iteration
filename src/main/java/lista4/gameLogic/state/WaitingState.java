@@ -4,16 +4,21 @@ public class WaitingState implements GameStateBehaviour {
 
     @Override
     public GameState getState() {
-        return GameState.WAITING_FOR_GAMERS;
+        return GameState.GAME_NOT_RUNNING;
     }
 
     @Override
     public GameStateBehaviour startGame() {
-        return GameState.GAME_RUNNING.getStateBehaviour();
+        return GameState.BLACK_MOVE.getStateBehaviour();
     }
 
     @Override
     public GameStateBehaviour stopGame() {
+        return this;
+    }
+
+    @Override
+    public GameStateBehaviour nextPlayer() {
         return this;
     }
 }

@@ -25,7 +25,7 @@ public class Server {
     private static GameOutputAdapter outAdapter = new OutputGameAdapter(); // Nie wiem czy to będzie potrzebne w serwerze, ja bym to stworzył w grze
 
     public static void main(String[] args) throws IOException {
-        gameManager.addAdapter(outAdapter);
+        gameManager.setAdapter(outAdapter);
         System.out.println("Wielowątkowy serwer jest uruchomiony na porcie " + PORT + "...");
 
         ExecutorService pool = Executors.newFixedThreadPool(GAMERS_NUMBER);

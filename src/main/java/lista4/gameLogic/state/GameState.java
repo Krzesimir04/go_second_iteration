@@ -1,25 +1,22 @@
 package lista4.gameLogic.state;
 
 public enum GameState {
-    WAITING_FOR_GAMERS {
-        @Override
-        public GameStateBehaviour getStateBehaviour() {
-            return new WaitingState();
-        }
-    },
-    GAME_RUNNING {
-        @Override
-        public GameStateBehaviour getStateBehaviour() {
-            return new RunningState();
-        }
-    };
+    GAME_NOT_RUNNING(new WaitingState()),
+    BLACK_MOVE(new BlackMove()),
+    WHITE_MOVE(new WhiteMove()),
 
-    /**
-     * Default
-     * 
-     * @return
-     */
+    //TODO Potencjalnie niepotrzebne
+    GAME_PROCESSING(new ProcessingState());
+
+
+    private final GameStateBehaviour gameStateBehaviour;
+
     public GameStateBehaviour getStateBehaviour() {
-        return null;
+        return gameStateBehaviour;
     }
+
+    GameState(GameStateBehaviour stateBehaviour) {
+        gameStateBehaviour = stateBehaviour;
+    }
+
 }

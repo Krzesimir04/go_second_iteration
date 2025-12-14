@@ -2,7 +2,7 @@ package lista4.gameLogic;
 
 public class Board {
     private int boardSize = 19;
-    private Stone[][] board;
+    private final Stone[][] board;
 
     public Board() {
         board = new Stone[boardSize][boardSize];
@@ -13,6 +13,11 @@ public class Board {
             return (board[x][y] == null);
         }
         return false;
+    }
+
+    public void PutStone(int x, int y, Stone stone){
+        if( !isFieldAvailable(x, y, stone.) )
+        board[x][y] = stone;
     }
 
 }

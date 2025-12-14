@@ -1,10 +1,11 @@
 package lista4.gameLogic.state;
 
-public class BlackMove implements GameStateBehaviour {
+//TODO Potencjalnie niepotrzebne, sprawdzić, czy nie trza usunąć
+public class ProcessingState implements GameStateBehaviour {
 
     @Override
     public GameState getState() {
-        return GameState.BLACK_MOVE;
+        return GameState.GAME_PROCESSING;
     }
 
     @Override
@@ -19,6 +20,6 @@ public class BlackMove implements GameStateBehaviour {
 
     @Override
     public GameStateBehaviour nextPlayer() {
-        return GameState.WHITE_MOVE.getStateBehaviour();
+        return this;
     }
 }

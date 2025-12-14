@@ -46,7 +46,7 @@ Przykład z chata jak to wygląda:
 Przykład: RunningState
 Java
 
-// W lista4.gameLogic.state.RunningState
+// W lista4.gameLogic.state.ProcessingState
 public class RunningState implements GameStateBehaviour {
     // ... pozostałe metody ...
 

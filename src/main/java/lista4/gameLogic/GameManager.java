@@ -1,6 +1,8 @@
 package lista4.gameLogic;
 
 import lista4.gameInterface.GameOutputAdapter;
+import lista4.gameLogic.state.GameState;
+import lista4.gameLogic.state.GameStateBehaviour;
 
 public class GameManager {
 
@@ -16,20 +18,53 @@ public class GameManager {
     }
 
     // tutaj już tworzę instancje, konstruktor jest private (wziąłem z przykładu)
-    private static GameManager instance = new GameManager();
-    private Board board;
+    private static GameManager instance;
+    private final GameContext gameContext;
+    private final Board board;
     private GameOutputAdapter outAdapter; // dodałem out Adapter do gry on później wyśle result do klientów
 
-    private GameManager() {
+
+//----------------------------------------Sekcja techniczna------------------------------------------------------
+
+    private GameManager(GameOutputAdapter outAdapter) {
+        instance = this;
+        gameContext = new GameContext(GameState.GAME_NOT_RUNNING);
+        board = new Board();
+        this.outAdapter = outAdapter;
     }
 
     public static GameManager getInstance() {
         return instance;
     }
-
-    public boolean validateMove(Move move) {
-        return board.isFieldAvailable(move.x, move.y, move.player);
+    public void setAdapter(GameOutputAdapter adapter) {
+        this.outAdapter = adapter;
     }
+    public GameOutputAdapter getAdapter() { return outAdapter; }
+    public Board getBoard() { return board; }
+
+//---------------------------------------Sekcja start/stop gry--------------------------------------------------
+
+    public void startGame(){
+        gameContext.startGame();
+    }
+
+    public void endGame(){
+        gameContext.endGame();
+    }
+
+//---------------------------------------Sekcja ruchów----------------------------------------------------------
+
+    public void makeMove(){
+        try {
+
+        }
+        catch (Exception e){
+
+        }
+
+    }
+
+
 
     // poniżej dodałem
     public String simulateMove(String message) { // może być voidem ale to do sprawdzania na razie
@@ -41,9 +76,8 @@ public class GameManager {
         return "moved after: 1s";
     }
 
-    public void addAdapter(GameOutputAdapter adapter) {
-        this.outAdapter = adapter;
-    }
+
+
     // tu koniec dodawania
 
 }
