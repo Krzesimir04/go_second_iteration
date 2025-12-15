@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 
 import lista4.gameLogic.Board;
 import lista4.gameLogic.GameManager;
+import lista4.gameLogic.gameExceptions.OutputException;
+import lista4.gameLogic.state.GameState;
 
 // będzie miało observerów
 public interface GameOutputAdapter<OutputType> {
@@ -14,7 +16,8 @@ public interface GameOutputAdapter<OutputType> {
                                                              // prostu tego brakowało(tam
     // widać dlaczego)
 
-    // void sendStatus(...);
-    void sendExceptionMessage(Exception exception, GameManager.PlayerColor target);
+    void sendState(GameState gameState, GameManager.PlayerColor target);
+
+    void sendExceptionMessage(OutputException exception, GameManager.PlayerColor target);
 
 }

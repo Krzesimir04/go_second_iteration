@@ -3,6 +3,7 @@ package lista4.gameLogic;
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.gameExceptions.GameNotRunningException;
 import lista4.gameLogic.gameExceptions.OtherPlayersTurnException;
+import lista4.gameLogic.gameExceptions.OutputException;
 import lista4.gameLogic.state.GameState;
 
 public class GameManager {
@@ -54,10 +55,12 @@ public class GameManager {
 
     public void startGame(){
         gameContext.startGame();
+        outAdapter.sendState(gameContext.getCurrentGameState(), PlayerColor.BOTH);
     }
 
     public void endGame(){
         gameContext.endGame();
+        outAdapter.sendState(gameContext.getCurrentGameState(), PlayerColor.BOTH);
     }
 
 //---------------------------------------Sekcja ruchów----------------------------------------------------------
@@ -81,8 +84,9 @@ public class GameManager {
             outAdapter.sendBoard(board, "???Cojamamtuwpisać???", PlayerColor.BOTH);
 
             gameContext.nextPlayer();
+            outAdapter.sendState(gameContext.getCurrentGameState(), PlayerColor.BOTH);
         }
-        catch (Exception e){
+        catch (OutputException e){
             outAdapter.sendExceptionMessage(e, move.playerColor);
         }
 
