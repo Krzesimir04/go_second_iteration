@@ -5,6 +5,7 @@ import lista4.gameLogic.gameExceptions.GameNotRunningException;
 import lista4.gameLogic.gameExceptions.OtherPlayersTurnException;
 import lista4.gameLogic.gameExceptions.OutputException;
 import lista4.gameLogic.state.GameState;
+import lista4.gameLogic.PlayerColor;
 
 public class GameManager {
 

@@ -19,30 +19,28 @@ class BoardTest {
     void newBoard_hasNoStones() {
         for (int x = 0; x < 19; x++) {
             for (int y = 0; y < 19; y++) {
-                assertNull(board.getStone(x, y),"Nowa plansza powinna być pusta");
+                assertNull(board.getStone(x, y), "Nowa plansza powinna być pusta");
             }
         }
     }
 
     @Test
     void putStone_placesStoneOnBoard() throws Exception {
-        Stone stone = new Stone(3, 3, GameManager.PlayerColor.BLACK, board);
+        Stone stone = new Stone(3, 3, PlayerColor.BLACK, board);
 
         board.putStone(3, 3, stone);
 
         assertNotNull(board.getStone(3, 3));
-        assertEquals(GameManager.PlayerColor.BLACK, board.getStone(3, 3).getPlayerColor());
+        assertEquals(PlayerColor.BLACK, board.getStone(3, 3).getPlayerColor());
     }
 
     @Test
     void cannotPutStoneOnOccupiedField() throws Exception {
         board.putStone(1, 1,
-                new Stone(1, 1, GameManager.PlayerColor.BLACK, board));
+                new Stone(1, 1, PlayerColor.BLACK, board));
 
-        assertThrows(FieldNotAvailableException.class, () ->
-                board.putStone(1, 1,
-                        new Stone(1, 1, GameManager.PlayerColor.WHITE, board))
-        );
+        assertThrows(FieldNotAvailableException.class, () -> board.putStone(1, 1,
+                new Stone(1, 1, PlayerColor.WHITE, board)));
     }
 
     @Test
@@ -61,7 +59,7 @@ class BoardTest {
     @Test
     void isEmpty_returnsFalseForOccupiedField() throws Exception {
         board.putStone(5, 5,
-                new Stone(5, 5, GameManager.PlayerColor.BLACK, board));
+                new Stone(5, 5, PlayerColor.BLACK, board));
 
         assertFalse(board.isEmpty(5, 5));
     }

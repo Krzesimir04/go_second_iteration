@@ -17,7 +17,7 @@ class StoneTest {
 
     @Test
     void stoneInCenter_hasFourBreaths() throws Exception {
-        Stone stone = new Stone(10, 10, GameManager.PlayerColor.BLACK, board);
+        Stone stone = new Stone(10, 10, PlayerColor.BLACK, board);
         board.putStone(10, 10, stone);
 
         stone.updateBreaths();
@@ -27,7 +27,7 @@ class StoneTest {
 
     @Test
     void stoneInCorner_hasTwoBreaths() throws Exception {
-        Stone stone = new Stone(0, 0, GameManager.PlayerColor.BLACK, board);
+        Stone stone = new Stone(0, 0, PlayerColor.BLACK, board);
         board.putStone(0, 0, stone);
 
         stone.updateBreaths();
@@ -38,7 +38,7 @@ class StoneTest {
 
     @Test
     void stoneOnEdge_hasThreeBreaths() throws Exception {
-        Stone stone = new Stone(0, 10, GameManager.PlayerColor.BLACK, board);
+        Stone stone = new Stone(0, 10, PlayerColor.BLACK, board);
         board.putStone(0, 10, stone);
 
         stone.updateBreaths();
@@ -53,10 +53,10 @@ class StoneTest {
 
     @Test
     void adjacentStone_removesBreath() throws Exception {
-        Stone black = new Stone(5, 5, GameManager.PlayerColor.BLACK, board);
+        Stone black = new Stone(5, 5, PlayerColor.BLACK, board);
         board.putStone(5, 5, black);
 
-        Stone white = new Stone(5, 6, GameManager.PlayerColor.WHITE, board);
+        Stone white = new Stone(5, 6, PlayerColor.WHITE, board);
         board.putStone(5, 6, white);
 
         black.updateBreaths();
@@ -66,7 +66,7 @@ class StoneTest {
 
     @Test
     void updateBreaths_doesNotThrowOnBoardEdge() throws Exception {
-        Stone stone = new Stone(18, 18, GameManager.PlayerColor.BLACK, board);
+        Stone stone = new Stone(18, 18, PlayerColor.BLACK, board);
         board.putStone(18, 18, stone);
 
         assertDoesNotThrow(stone::updateBreaths,
@@ -75,7 +75,7 @@ class StoneTest {
 
     @Test
     void stoneCannotBeOfBothColors() {
-        assertThrows(IllegalStoneOfBothColorsException.class, () -> new Stone(1, 1, GameManager.PlayerColor.BOTH, board),
+        assertThrows(IllegalStoneOfBothColorsException.class, () -> new Stone(1, 1, PlayerColor.BOTH, board),
                 "Kamień nie może mieć koloru BOTH");
     }
 }
