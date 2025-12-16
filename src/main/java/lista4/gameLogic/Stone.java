@@ -9,17 +9,16 @@ public class Stone {
 
     private final int x;
     private final int y;
-    private final GameManager.PlayerColor playerColor;
+    private final PlayerColor playerColor;
     private final Board board;
     private final Field field;
     private final Set<Field> breathes;
 
-
-    public Stone(int x, int y, GameManager.PlayerColor playerColor, Board board) throws IllegalStoneOfBothColorsException {
+    public Stone(int x, int y, PlayerColor playerColor, Board board) throws IllegalStoneOfBothColorsException {
         this.x = x;
         this.y = y;
 
-        if(playerColor == GameManager.PlayerColor.BOTH) {
+        if (playerColor == PlayerColor.BOTH) {
             throw new IllegalStoneOfBothColorsException();
         }
 
@@ -30,16 +29,18 @@ public class Stone {
         updateBreaths();
     }
 
-    public GameManager.PlayerColor getPlayerColor() {
+    public PlayerColor getPlayerColor() {
         return playerColor;
     }
 
-    public void updateBreaths(){
+    public void updateBreaths() {
         breathes.clear();
         for (Field neighbour : this.field.getNeighbours()) {
-            if(neighbour == null) continue;
+            if (neighbour == null)
+                continue;
 
-            if(neighbour.getStone() == null) breathes.add(neighbour);
+            if (neighbour.getStone() == null)
+                breathes.add(neighbour);
         }
 
     }
@@ -52,11 +53,11 @@ public class Stone {
         breathes.add(breath);
     }
 
-    public int getBreathCount(){
+    public int getBreathCount() {
         return breathes.size();
     }
 
-    public Set<Field> getBreaths(){
+    public Set<Field> getBreaths() {
         return breathes;
     }
 

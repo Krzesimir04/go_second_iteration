@@ -8,91 +8,79 @@ import lista4.gameLogic.state.GameState;
 
 public class GameManager {
 
-    public enum PlayerColor {
-        BLACK,
-        WHITE,
-        BOTH
-    }
-
-    public static class Move {
-        int x;
-        int y;
-        PlayerColor playerColor;
-
-        Move(int x, int y, PlayerColor playerColor) {
-            this.x = x;
-            this.y = y;
-            this.playerColor = playerColor;
-        }
-    }
-
     // tutaj już tworzę instancje, konstruktor jest private (wziąłem z przykładu)
-    private static GameManager instance;
+    private static GameManager instance = new GameManager();
     private final GameContext gameContext;
     private final Board board;
     private GameOutputAdapter outAdapter; // dodałem out Adapter do gry on później wyśle result do klientów
 
+    // ----------------------------------------Sekcja
+    // techniczna------------------------------------------------------
 
-//----------------------------------------Sekcja techniczna------------------------------------------------------
-
-    private GameManager(GameOutputAdapter outAdapter) {
-        instance = this;
+    private GameManager() {
         gameContext = new GameContext(GameState.GAME_NOT_RUNNING);
         board = new Board();
-        this.outAdapter = outAdapter;
     }
 
-    public static GameManager getInstance() {
+    public static GameManager getInstance() { // double checking jak w poprzedniej liście
         return instance;
     }
+
     public void setAdapter(GameOutputAdapter adapter) {
         this.outAdapter = adapter;
     }
-    public GameOutputAdapter getAdapter() { return outAdapter; }
-    public Board getBoard() { return board; }
 
-//---------------------------------------Sekcja start/stop gry--------------------------------------------------
+    public GameOutputAdapter getAdapter() {
+        return outAdapter;
+    }
 
-    public void startGame(){
+    public Board getBoard() {
+        return board;
+    }
+
+    // ---------------------------------------Sekcja start/stop
+    // gry--------------------------------------------------
+
+    public void startGame() {
         gameContext.startGame();
-        outAdapter.sendState(gameContext.getCurrentGameState(), PlayerColor.BOTH);
+        outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
-    public void endGame(){
+    public void endGame() {
         gameContext.endGame();
-        outAdapter.sendState(gameContext.getCurrentGameState(), PlayerColor.BOTH);
+        outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
-//---------------------------------------Sekcja ruchów----------------------------------------------------------
+    // ---------------------------------------Sekcja
+    // ruchów----------------------------------------------------------
 
-    //TODO - sprawdzić, czy nie trzeba będzie zrobić synchronized
-    public void makeMove(Move move){
+    // TODO - sprawdzić, czy nie trzeba będzie zrobić synchronized
+    // jeśli używamy stanów to sądzę że nie bo 2 wątki i tak nie mogą zmodyfikować
+    // planszy w tym samym momencie
+    public void makeMove(Move move) {
         try {
-            if(gameContext.getCurrentGameState() == GameState.GAME_NOT_RUNNING){
-                throw new GameNotRunningException();
+            if (gameContext.getGameState() == GameState.GAME_NOT_RUNNING) {
+                throw new GameNotRunningException("gra się nie rozpoczęła.");
             }
-            if(move.playerColor == PlayerColor.BLACK && gameContext.getCurrentGameState() == GameState.WHITE_MOVE) {
+            if (move.playerColor == PlayerColor.BLACK && gameContext.getGameState() == GameState.WHITE_MOVE) {
                 throw new OtherPlayersTurnException(PlayerColor.WHITE);
             }
-            if(move.playerColor == PlayerColor.WHITE && gameContext.getCurrentGameState() == GameState.BLACK_MOVE) {
+            if (move.playerColor == PlayerColor.WHITE && gameContext.getGameState() == GameState.BLACK_MOVE) {
                 throw new OtherPlayersTurnException(PlayerColor.BLACK);
             }
 
             Stone stone = new Stone(move.x, move.y, move.playerColor, board);
             board.putStone(move.x, move.y, stone);
 
-            outAdapter.sendBoard(board, "???Cojamamtuwpisać???", PlayerColor.BOTH);
+            outAdapter.sendBoard(board, PlayerColor.BOTH);
 
             gameContext.nextPlayer();
-            outAdapter.sendState(gameContext.getCurrentGameState(), PlayerColor.BOTH);
-        }
-        catch (OutputException e){
+            // outAdapter.sendState(gameContext.getCurrentGameState(), PlayerColor.BOTH);
+        } catch (OutputException e) {
             outAdapter.sendExceptionMessage(e, move.playerColor);
         }
 
     }
-
-
 
     // poniżej dodałem
     public String simulateMove(String message) { // może być voidem ale to do sprawdzania na razie
@@ -101,11 +89,9 @@ public class GameManager {
         } catch (InterruptedException e) {
 
         }
-        outAdapter.sendBoard(board, message, PlayerColor.BOTH);
+        outAdapter.sendBoard(board, PlayerColor.BOTH);
         return "moved after: 1s";
     }
-
-
 
     // tu koniec dodawania
 

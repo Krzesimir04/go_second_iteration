@@ -8,6 +8,7 @@ import java.util.Scanner;
 import lista4.gameInterface.GameInputAdapter;
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.GameManager;
+import lista4.gameLogic.PlayerColor;
 import lista4.gameInterface.IOExceptions.WrongMoveFormat;
 
 /**
@@ -19,9 +20,10 @@ class ClientThread implements Runnable {
     private Socket socket;
     GameInputAdapter inAdapter;
     GameOutputAdapter outAdapter;
-    GameManager.PlayerColor color;
+    PlayerColor color;
 
-    ClientThread(Socket socket, GameInputAdapter inAdapter, GameOutputAdapter outAdapter, GameManager.PlayerColor color) {
+    ClientThread(Socket socket, GameInputAdapter inAdapter, GameOutputAdapter outAdapter,
+            PlayerColor color) {
         this.socket = socket;
         this.inAdapter = inAdapter;
         this.outAdapter = outAdapter;
@@ -42,13 +44,10 @@ class ClientThread implements Runnable {
                 // send move to INadapter and wait for a message from Outadapter
                 // based on input try catch inAdaper
                 try {
-                    inAdapter.makeMove(clientMessage);
-                } catch (WrongMoveFormat wrongmove) {
+                    inAdapter.makeMove(clientMessage, color);
+                } catch (Exception wrongmove) {
                     out.println(wrongmove.getMessage());
                 }
-                // catch (NotYourMove e) {
-                // out.println(e.getMessage());
-                // }
                 if (clientMessage.equalsIgnoreCase("quit")) {
                     break;
                 }

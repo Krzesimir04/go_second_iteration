@@ -3,6 +3,8 @@ package lista4.adapters;
 import lista4.gameInterface.GameInputAdapter;
 import lista4.gameInterface.IOExceptions.WrongMoveFormat;
 import lista4.gameLogic.GameManager;
+import lista4.gameLogic.PlayerColor;
+import lista4.gameLogic.Move;
 
 /**
  * Final adapter for console application
@@ -17,12 +19,11 @@ public class InputGameAdapter implements GameInputAdapter<String> {
         this.gameManager = gameManager;
     }
 
-    public String makeMove(String input) throws WrongMoveFormat {
-        if (input.matches("[a-zA-Z] [1-9]") || input.matches("[a-zA-Z] 1[0-3]")) {
-            String to_ret = gameManager.simulateMove(input);
-            return to_ret;
+    public void makeMove(String input, PlayerColor color) throws WrongMoveFormat {
+        if (input.matches("[a-mA-M] [1-9]") || input.matches("[a-mA-M] 1[0-3]")) {
+            gameManager.makeMove(new Move(2, 4, color));
+        } else {
+            throw new WrongMoveFormat("zła komenda podaj w formacie a-m 1-13");
         }
-        throw new WrongMoveFormat("zla komenda");
     };
-
 }

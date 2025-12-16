@@ -5,9 +5,8 @@ public enum GameState {
     BLACK_MOVE(new BlackMove()),
     WHITE_MOVE(new WhiteMove()),
 
-    //TODO Potencjalnie niepotrzebne
+    // TODO Potencjalnie niepotrzebne
     GAME_PROCESSING(new ProcessingState());
-
 
     private final GameStateBehaviour gameStateBehaviour;
 

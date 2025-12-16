@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import lista4.gameLogic.GameManager;
+import lista4.gameLogic.PlayerColor;
 import lista4.gameInterface.GameInputAdapter;
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.adapters.InputGameAdapter;
@@ -22,7 +23,8 @@ public class Server {
     public static GameManager gameManager = GameManager.getInstance();
 
     private static GameInputAdapter inAdapter = new InputGameAdapter(gameManager);
-    private static GameOutputAdapter outAdapter = new OutputGameAdapter(); // Nie wiem czy to będzie potrzebne w serwerze, ja bym to stworzył w grze
+    private static GameOutputAdapter outAdapter = new OutputGameAdapter(); // Nie wiem czy to będzie potrzebne w
+    // serwerze, ja bym to stworzył w grze
 
     public static void main(String[] args) throws IOException {
         gameManager.setAdapter(outAdapter);
@@ -36,13 +38,13 @@ public class Server {
                 Socket clientSocket = listener.accept();
                 System.out.println(">> Połączono z klientem: " + clientSocket.getInetAddress());
                 // przypisanie nowego socketu do wątku,
-                // wątek ma mieć adaptery, a nie grę na razie sprawdzam
+                // wątek ma mieć adaptery, a nie grę
                 if (i == 0) {
-                    pool.execute(new ClientThread(clientSocket, inAdapter, outAdapter, GameManager.PlayerColor.BLACK));
+                    pool.execute(new ClientThread(clientSocket, inAdapter, outAdapter, PlayerColor.BLACK));
                     i = i + 1;
                 } else {
-                    pool.execute(new ClientThread(clientSocket, inAdapter, outAdapter, GameManager.PlayerColor.WHITE));
-
+                    pool.execute(new ClientThread(clientSocket, inAdapter, outAdapter, PlayerColor.WHITE));
+                    gameManager.startGame();
                 }
             }
         } finally {

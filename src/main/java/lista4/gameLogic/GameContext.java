@@ -4,13 +4,13 @@ import lista4.gameLogic.state.GameState;
 
 public class GameContext {
 
-    private GameState curGameState;
+    GameState curGameState;
 
-    GameContext( GameState initialState ) {
+    GameContext(GameState initialState) {
         curGameState = initialState;
     }
 
-    public GameState getCurrentGameState() {
+    public GameState getGameState() {
         return curGameState;
     }
 
@@ -18,15 +18,15 @@ public class GameContext {
         curGameState = gameState;
     }
 
-    public void startGame(){
+    public void startGame() {
         curGameState.getStateBehaviour().startGame(this);
     }
 
-    public void endGame(){
+    public void endGame() {
         curGameState.getStateBehaviour().stopGame(this);
     }
 
-    public void nextPlayer(){
+    public void nextPlayer() {
         curGameState.getStateBehaviour().nextPlayer(this);
     }
 
