@@ -20,8 +20,12 @@ public class InputGameAdapter implements GameInputAdapter<String> {
     }
 
     public void makeMove(String input, PlayerColor color) throws WrongMoveFormat {
-        if (input.matches("[a-mA-M] [1-9]") || input.matches("[a-mA-M] 1[0-3]")) {
-            gameManager.makeMove(new Move(2, 4, color));
+        if (input.matches("[a-sA-S] [1-9]") || input.matches("[a-sA-S] 1[0-9]")) {
+            int base = (int) 'a';
+            int y = Integer.parseInt(input.substring(2)) - 1;
+            int x = (int) input.toLowerCase().charAt(0) - base;
+
+            gameManager.makeMove(new Move(x, y, color));
         } else {
             throw new WrongMoveFormat("zła komenda podaj w formacie a-m 1-13");
         }

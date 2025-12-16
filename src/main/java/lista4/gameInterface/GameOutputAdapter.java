@@ -21,6 +21,6 @@ public interface GameOutputAdapter<OutputType> {
 
     void sendState(GameState gameState, PlayerColor target);
 
-    void sendExceptionMessage(OutputException exception, PlayerColor target);
+    void sendExceptionMessage(Exception exception, PlayerColor target);
 
 }

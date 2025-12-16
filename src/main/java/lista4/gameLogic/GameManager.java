@@ -24,6 +24,17 @@ public class GameManager {
     }
 
     public static GameManager getInstance() { // double checking jak w poprzedniej liście
+        if (instance == null) {
+            synchronized (GameManager.class) {
+                if (instance == null) {
+                    System.out.println("Instance is null for Thread " + Thread.currentThread().getId());
+                    instance = new GameManager();
+                    System.out.println(
+                            "Returing " + instance.hashCode() + " instance to Thread "
+                                    + Thread.currentThread().getId());
+                }
+            }
+        }
         return instance;
     }
 
@@ -53,11 +64,7 @@ public class GameManager {
     }
 
     // ---------------------------------------Sekcja
-    // ruchów----------------------------------------------------------
-
-    // TODO - sprawdzić, czy nie trzeba będzie zrobić synchronized
-    // jeśli używamy stanów to sądzę że nie bo 2 wątki i tak nie mogą zmodyfikować
-    // planszy w tym samym momencie
+    // ruchów---------------------------------------
     public void makeMove(Move move) {
         try {
             if (gameContext.getGameState() == GameState.GAME_NOT_RUNNING) {
@@ -76,7 +83,8 @@ public class GameManager {
             outAdapter.sendBoard(board, PlayerColor.BOTH);
 
             gameContext.nextPlayer();
-            // outAdapter.sendState(gameContext.getCurrentGameState(), PlayerColor.BOTH);
+            outAdapter.sendBroadcast("koord" + move.x + " y: " + move.y);
+            // outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
         } catch (OutputException e) {
             outAdapter.sendExceptionMessage(e, move.playerColor);
         }

@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.Board;
-import lista4.gameLogic.gameExceptions.OutputException;
 import lista4.gameLogic.state.GameState;
 import lista4.gameLogic.PlayerColor;
 
@@ -23,11 +22,6 @@ public class OutputGameAdapter implements GameOutputAdapter<String> {
 
     @Override
     public void sendState(GameState gameState, PlayerColor target) {
-
-    }
-
-    @Override
-    public void sendExceptionMessage(OutputException exception, PlayerColor target) {
 
     }
 
@@ -53,7 +47,6 @@ public class OutputGameAdapter implements GameOutputAdapter<String> {
         } else {
             PrintWriter out = activeWriters.get(target);
             out.println("plansza: ");
-
         }
     };
 
