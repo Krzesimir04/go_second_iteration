@@ -27,7 +27,7 @@ public class InputGameAdapter implements GameInputAdapter<String> {
 
             gameManager.makeMove(new Move(x, y, color));
         } else {
-            throw new WrongMoveFormat("zła komenda podaj w formacie a-m 1-13");
+            throw new WrongMoveFormat("zła komenda podaj w formacie A-S 1-19");
         }
     };
 }

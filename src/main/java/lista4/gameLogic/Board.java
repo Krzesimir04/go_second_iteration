@@ -82,4 +82,8 @@ public class Board {
         }
         return null;
     }
+
+    public int getSize() {
+        return this.boardSize;
+    }
 }

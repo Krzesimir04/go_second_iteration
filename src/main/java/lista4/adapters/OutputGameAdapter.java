@@ -8,6 +8,7 @@ import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.Board;
 import lista4.gameLogic.state.GameState;
 import lista4.gameLogic.PlayerColor;
+import lista4.gameLogic.Stone;
 
 /**
  * Class uses Observers (ClientThread) to communicate with client
@@ -41,19 +42,37 @@ public class OutputGameAdapter implements GameOutputAdapter<String> {
         if (target == PlayerColor.BOTH) {
             for (PrintWriter out : activeWriters.values()) {
                 if (out != null) {
-                    out.println("plansza: ");
+                    out.println(boardToString(board));
                 }
             }
         } else {
             PrintWriter out = activeWriters.get(target);
-            out.println("plansza: ");
+            out.println(boardToString(board));
         }
     };
 
-    // void sendStatus(...);
     public void sendExceptionMessage(Exception exception, PlayerColor target) {
         PrintWriter out = activeWriters.get(target);
         out.println(exception.getMessage());
         out.println("blad");
     };
+
+    private String boardToString(Board board) {
+        String result = "   A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S";
+        for (int y = 0; y < board.getSize(); y++) {
+            result = result.concat("\n");
+            result = result.concat(String.format("%2d", y + 1) + "");
+            for (int x = 0; x < board.getSize(); x++) {
+                Stone stone = board.getStone(x, y);
+                if (stone == null) {
+                    result = result.concat(" . ");
+                } else if (stone.getPlayerColor() == PlayerColor.WHITE) {
+                    result = result.concat(" W ");
+                } else {
+                    result = result.concat(" B ");
+                }
+            }
+        }
+        return result;
+    }
 }

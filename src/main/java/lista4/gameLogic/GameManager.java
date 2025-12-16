@@ -83,7 +83,7 @@ public class GameManager {
             outAdapter.sendBoard(board, PlayerColor.BOTH);
 
             gameContext.nextPlayer();
-            outAdapter.sendBroadcast("koord" + move.x + " y: " + move.y);
+
             // outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
         } catch (OutputException e) {
             outAdapter.sendExceptionMessage(e, move.playerColor);

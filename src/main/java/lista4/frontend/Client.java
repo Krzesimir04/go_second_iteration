@@ -16,13 +16,14 @@ public class Client {
                 BufferedReader consoleIn = new BufferedReader(new InputStreamReader(System.in))) {
             Thread listenerThread = new Thread(new ServerListener(socket));
             listenerThread.start(); // new thread is listening
-
+            System.out.print(">");
             String lineToSend;
 
             while ((lineToSend = consoleIn.readLine()) != null) {
 
                 // this thread is sendint to server
                 out.println(lineToSend);
+                // System.out.print(">");
             }
 
         } catch (IOException e) {
@@ -45,8 +46,8 @@ public class Client {
                 // listening loop
                 while (in.hasNextLine()) {
                     String message = in.nextLine();
-                    System.out.println("\n[Serwer] " + message);
-
+                    System.out.println(message);
+                    // System.out.flush();
                     // Opcjonalnie: Dodaj logikę do przetwarzania specjalnych komunikatów
                     if (message.contains("GOODBYE")) {
                         break;

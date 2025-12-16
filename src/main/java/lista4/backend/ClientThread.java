@@ -39,7 +39,7 @@ class ClientThread implements Runnable {
             out.println("WELCOME " + color + ". Waiting for command.");
             while (in.hasNextLine()) {
                 String clientMessage = in.nextLine();
-                System.out.println("   [Klient " + color + "]: " + clientMessage);
+                // System.out.println(" [Klient " + color + "]: " + clientMessage);
 
                 // send move to INadapter and wait for a message from Outadapter
                 // based on input try catch inAdaper
