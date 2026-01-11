@@ -2,6 +2,7 @@ package lista4.backend;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -21,14 +22,16 @@ class ClientThread implements Runnable {
     private Socket socket;
     GameInputAdapter inAdapter;
     GameOutputAdapter outAdapter;
+    ArrayList<GameInputAdapter> inputAdapters = new ArrayList<>();
+    ArrayList<GameOutputAdapter> outputAdapters = new ArrayList<>();
     PlayerColor color;
     ArrayList gamers;
 
-    ClientThread(Socket socket, GameInputAdapter inAdapter, GameOutputAdapter outAdapter,
+    ClientThread(Socket socket, ArrayList inAdapters, ArrayList outAdapters,
             PlayerColor color, ArrayList gamers) {
         this.socket = socket;
-        this.inAdapter = inAdapter;
-        this.outAdapter = outAdapter;
+        this.inputAdapters = inAdapters;
+        this.outputAdapters = outAdapters;
         this.color = color;
         this.gamers = gamers;
     }
@@ -38,14 +41,28 @@ class ClientThread implements Runnable {
 
         try (Scanner in = new Scanner(socket.getInputStream());
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+            if (in.hasNextLine()) {
+                String clientMessage = in.nextLine();
+                switch (clientMessage) {
+                    case "console":
+                        this.inAdapter = inputAdapters.get(1);
+                        this.outAdapter = outputAdapters.get(1);
+                        break;
+                    case "GUI":
+                        this.inAdapter = inputAdapters.get(0);
+                        this.outAdapter = outputAdapters.get(0);
+                        break;
+                    default:
+                        this.inAdapter = inputAdapters.get(0);
+                        this.outAdapter = outputAdapters.get(0);
+                        break;
+                }
+            }
+            out.println(color);
             outAdapter.registerPlayer(color, out);
-            out.println("WELCOME " + color + ". Waiting for command.");
+            // out.println("WELCOME " + color + ". Waiting for command.");
             while (in.hasNextLine()) {
                 String clientMessage = in.nextLine();
-                // System.out.println(" [Klient " + color + "]: " + clientMessage);
-
-                // send move to INadapter and wait for a message from Outadapter
-                // based on input try catch inAdaper
                 try {
                     inAdapter.makeMove(clientMessage, color);
                 } catch (Exception wrongmove) {

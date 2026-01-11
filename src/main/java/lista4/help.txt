@@ -99,3 +99,8 @@ public class Game {
 }
 Podsumowanie
 Zamiast: if (stan == WAITING) w każdej metodzie Game. Użyj: currentStateBehaviour.handleAkcja(...) w każdej metodzie Game.
+
+
+dostosowanie GUIClient - lepiej zrobić aby ładniej było
+dodanie opcji poddanie się poddania się
+dodanie opcji pominięcia ruchu 

@@ -84,24 +84,11 @@ public class GameManager {
 
             gameContext.nextPlayer();
 
-            // outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+            outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
         } catch (OutputException e) {
             outAdapter.sendExceptionMessage(e, move.playerColor);
         }
 
     }
-
-    // poniżej dodałem
-    public String simulateMove(String message) { // może być voidem ale to do sprawdzania na razie
-        try {
-            Thread.sleep(100); // tutaj gra coś sobie sprawdza
-        } catch (InterruptedException e) {
-
-        }
-        outAdapter.sendBoard(board, PlayerColor.BOTH);
-        return "moved after: 1s";
-    }
-
-    // tu koniec dodawania
 
 }

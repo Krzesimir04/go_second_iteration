@@ -20,10 +20,30 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                 <mainClass>lista4.App</mainClass>
             </configuration>
         </plugin>
+        <plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.8</version>
+            <configuration>
+                <mainClass>lista4.frontend.GUIClient</mainClass> </configuration>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
+            <configuration>
+                <source>${maven.compiler.source}</source>
+                <target>${maven.compiler.target}</target>
+            </configuration>
+        </plugin>
     </plugins>
 </build>
 <properties>
     <artifactFinalNamePrefix>Go</artifactFinalNamePrefix>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>21</maven.compiler.source> <maven.compiler.target>21</maven.compiler.target>
+    <javafx.version>21</javafx.version> <artifactFinalNamePrefix>Go</artifactFinalNamePrefix>
 </properties>
     <dependencies>
     <dependency>
@@ -32,6 +52,18 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <version>5.10.0</version>
     <scope>test</scope>
 </dependency>
+<dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>${javafx.version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>${javafx.version}</version>
+    </dependency>
+
 <!-- <dependency>
     <groupId>org.mariadb.jdbc</groupId>
     <artifactId>mariadb-java-client</artifactId>

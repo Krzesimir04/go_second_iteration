@@ -18,7 +18,7 @@ public class Client {
             listenerThread.start(); // new thread is listening
             System.out.print(">");
             String lineToSend;
-
+            out.println("console"); // info for ClientThread to set an Adapter
             while ((lineToSend = consoleIn.readLine()) != null) {
 
                 // this thread is sendint to server

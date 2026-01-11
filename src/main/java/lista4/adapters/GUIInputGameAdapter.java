@@ -8,15 +8,15 @@ import lista4.gameLogic.PlayerColor;
 import lista4.gameLogic.Move;
 
 /**
- * Final adapter for console application
+ * Final adapter for GUI application
  * It is used in ClientThread and sends command to the game
  * Later game uses OutputGameAdapter and it will send info about result to
  * client
  */
-public class InputGameAdapter implements GameInputAdapter<String> {
+public class GUIInputGameAdapter implements GameInputAdapter<String> {
     private final GameManager gameManager; // Wstrzyknięta instancja Game
 
-    public InputGameAdapter(GameManager gameManager, GameOutputAdapter outAdapter) {
+    public GUIInputGameAdapter(GameManager gameManager, GameOutputAdapter outAdapter) {
         this.gameManager = gameManager;
         this.gameManager.setAdapter(outAdapter);
     }
@@ -26,10 +26,9 @@ public class InputGameAdapter implements GameInputAdapter<String> {
             int base = (int) 'a';
             int y = Integer.parseInt(input.substring(2)) - 1;
             int x = (int) input.toLowerCase().charAt(0) - base;
-
             gameManager.makeMove(new Move(x, y, color));
         } else {
-            throw new WrongMoveFormat("zła komenda podaj w formacie A-S 1-19");
+            throw new WrongMoveFormat("Błąd wysyłania ruchu przez GUI.");
         }
     };
 }
