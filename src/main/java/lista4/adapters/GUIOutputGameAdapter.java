@@ -56,7 +56,7 @@ public class GUIOutputGameAdapter implements GameOutputAdapter<String> {
      */
     @Override
     public void sendState(GameState gameState, PlayerColor target) {
-        sendToTarget("STATUS Gra trwa. Tura: " + gameState.toString(), target);
+        sendToTarget("STATUS: " + gameState.toString(), target);
     }
 
     /**

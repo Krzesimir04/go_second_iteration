@@ -113,13 +113,13 @@ public class Server {
                 if (gamers.size() < 2 && !gamers.contains(PlayerColor.BLACK)) {
                     // Assign Black Player
                     pool.execute(new ClientThread(clientSocket, inputAdapters,
-                            outputAdapters, PlayerColor.BLACK, gamers));
+                            outputAdapters, PlayerColor.BLACK, gamers, gameManager));
                     gamers.add(PlayerColor.BLACK);
 
                 } else if (gamers.size() < 2 && !gamers.contains(PlayerColor.WHITE)) {
                     // Assign White Player and Start Game
                     pool.execute(new ClientThread(clientSocket, inputAdapters,
-                            outputAdapters, PlayerColor.WHITE, gamers));
+                            outputAdapters, PlayerColor.WHITE, gamers, gameManager));
                     gamers.add(PlayerColor.WHITE);
                     gameManager.startGame();
                 }

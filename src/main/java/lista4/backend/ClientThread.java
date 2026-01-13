@@ -48,6 +48,9 @@ class ClientThread implements Runnable {
     /** Reference to the shared list of active players for connection management. */
     ArrayList gamers;
 
+    /** Reference to the gameManager to start or change the state of game. */
+    GameManager gameManager;
+
     /**
      * Constructs a new ClientThread.
      *
@@ -61,12 +64,13 @@ class ClientThread implements Runnable {
      *                    disconnect.
      */
     ClientThread(Socket socket, ArrayList inAdapters, ArrayList outAdapters,
-            PlayerColor color, ArrayList gamers) {
+            PlayerColor color, ArrayList gamers, GameManager gameManager) {
         this.socket = socket;
         this.inputAdapters = inAdapters;
         this.outputAdapters = outAdapters;
         this.color = color;
         this.gamers = gamers;
+        this.gameManager = gameManager;
     }
 
     /**
@@ -122,7 +126,14 @@ class ClientThread implements Runnable {
             // Registration
             out.println(color);
             outAdapter.registerPlayer(color, out);
-
+            synchronized (gamers) {
+                if (gamers.size() == 2) { // if we have 2 palyers then run the game
+                    System.out.println("Mamy 2 graczy! Uruchamiam grę.");
+                    gameManager.startGame();
+                } else {
+                    out.println("WAIT Czekanie na drugiego gracza...");
+                }
+            }
             // Command Loop
             while (in.hasNextLine()) {
                 String clientMessage = in.nextLine();
@@ -150,6 +161,7 @@ class ClientThread implements Runnable {
             // Cleanup
             try {
                 gamers.remove(color);
+                gameManager.waitGame();
                 socket.close();
                 System.out.println(">> Połączenie zakończone z klientem: " + socket.getInetAddress());
             } catch (IOException e) {

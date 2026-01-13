@@ -67,6 +67,11 @@ public class GameManager {
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
+    public void waitGame() {
+        gameContext.endGame();
+        outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+    }
+
     // ---------------------------------------Sekcja
     // ruchów---------------------------------------
     public void makeMove(Move move) {

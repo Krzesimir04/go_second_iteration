@@ -256,7 +256,6 @@ public class GUIClient extends Application {
 
                     // All UI updates must happen inside Platform.runLater
                     Platform.runLater(() -> {
-                        logArea.setText("" + message + "\n");
 
                         // Protocol Parser
                         if (message.equals("CLEAR_BOARD")) {
@@ -273,6 +272,8 @@ public class GUIClient extends Application {
                             } catch (Exception e) {
                                 logArea.setText("Błąd rysowania: " + e.getMessage() + "\n");
                             }
+                        } else {
+                            logArea.setText("" + message + "\n");
                         }
                     });
                 }
