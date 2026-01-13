@@ -183,28 +183,6 @@ public class GameManager {
                 throw canMakeMove;
 
             gameContext.passNextPlayer();
-            gameContext.stopGame();
-        } catch (Exception e) {
-            outAdapter.sendExceptionMessage(e, playerColor);
-        }
-    }
-
-    /**
-     * Resumes the game for a given player.
-     * 
-     * @param playerColor Player resuming the game
-     */
-    public void resumeGame(PlayerColor playerColor) {
-        gameContext.setCurPlayerColor(playerColor);
-    }
-
-    public void passMove(PlayerColor playerColor) {
-        try {
-            Exception canMakeMove = canMakeMove(playerColor);
-            if (canMakeMove != null)
-                throw canMakeMove;
-
-            gameContext.passNextPlayer();
             if (gameContext.getConsecutivePasses() == 2) {
                 gameContext.startNegotiations();
                 gameContext.resetPasses();
@@ -219,6 +197,10 @@ public class GameManager {
         gameContext.setCurPlayerColor(playerColor.other());
         gameContext.clearTeritories();
         gameContext.resumeGame();
+    }
+
+    public void proposeFinishNegotiation(PlayerColor playerColor) {
+        outAdapter.sendEndOfNegotiationToPlayer(playerColor.other());
     }
 
     public void finishNegotiation() {

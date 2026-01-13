@@ -8,20 +8,10 @@ import lista4.gameLogic.state.GameState;
  * Keeps track of the current player, game state, and consecutive passes.
  * Provides methods to control game flow (start, stop, next player, pass).
  */
-import java.util.HashSet;
-import java.util.Set;
-
 public class GameContext {
 
-    /** Current player's color */
     PlayerColor curPlayerColor;
-
-    /** Number of consecutive passes made by both players */
     int consecutivePasses;
-
-    /** Current state of the game */
-    Set<Integer> blackTeritory = new HashSet<>();
-    Set<Integer> whiteTeritory = new HashSet<>();
 
     GameState curGameState;
 
@@ -69,27 +59,11 @@ public class GameContext {
     /**
      * Switches to the next player.
      */
-    public void finishGame() {
-        curGameState.getStateBehaviour().finishGame(this);
-    }
-
-    public void startNegotiations() {
-        curGameState.getStateBehaviour().startNegotiations(this);
-    }
-
-    public void resumeGame() {
-        curGameState.getStateBehaviour().resumeGame(this);
-    }
-
     public void nextPlayer() {
+
         curPlayerColor = curPlayerColor.other();
     }
 
-    /**
-     * Returns the current player's color.
-     *
-     * @return PlayerColor of current player
-     */
     public PlayerColor getPlayerColor() {
         return curPlayerColor;
     }
@@ -125,41 +99,6 @@ public class GameContext {
      */
     public void resetPasses() {
         consecutivePasses = 0;
-    }
-
-    public void addTeritory(PlayerColor playerColor, int x, int y) {
-        int cordsCode = 100 * y + x;
-        if (playerColor == PlayerColor.WHITE) {
-            if (!blackTeritory.contains(cordsCode))
-                whiteTeritory.add(cordsCode);
-        }
-        if (playerColor == PlayerColor.BLACK) {
-            if (!whiteTeritory.contains(cordsCode))
-                blackTeritory.add(cordsCode);
-        }
-    }
-
-    public void removeTeritory(PlayerColor playerColor, int x, int y) {
-        int cordsCode = 100 * y + x;
-        if (playerColor == PlayerColor.WHITE) {
-            whiteTeritory.remove(cordsCode);
-        }
-        if (playerColor == PlayerColor.BLACK) {
-            blackTeritory.remove(cordsCode);
-        }
-    }
-
-    public void clearTeritories() {
-        blackTeritory.clear();
-        whiteTeritory.clear();
-    }
-
-    public int blackPoints() {
-        return blackTeritory.size();
-    }
-
-    public int whitePoints() {
-        return whiteTeritory.size();
     }
 
 }
