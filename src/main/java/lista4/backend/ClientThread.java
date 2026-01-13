@@ -1,3 +1,4 @@
+
 package lista4.backend;
 
 import java.io.IOException;
@@ -30,25 +31,25 @@ class ClientThread implements Runnable {
     private Socket socket;
 
     /** The currently active input adapter (Console or GUI). */
-    private GameInputAdapter inAdapter;
+    GameInputAdapter inAdapter;
 
     /** The currently active output adapter (Console or GUI). */
-    private GameOutputAdapter outAdapter;
-
-    /** The color assigned to this player (BLACK or WHITE). */
-    private PlayerColor color;
-
-    /** Reference to the shared list of active players for connection management. */
-    private ArrayList gamers;
+    GameOutputAdapter outAdapter;
 
     /** List of available input adapters to choose from. */
-    private ArrayList<GameInputAdapter> inputAdapters = new ArrayList<>();
+    ArrayList<GameInputAdapter> inputAdapters = new ArrayList<>();
 
     /** List of available output adapters to choose from. */
-    private ArrayList<GameOutputAdapter> outputAdapters = new ArrayList<>();
+    ArrayList<GameOutputAdapter> outputAdapters = new ArrayList<>();
+
+    /** The color assigned to this player (BLACK or WHITE). */
+    PlayerColor color;
+
+    /** Reference to the shared list of active players for connection management. */
+    ArrayList gamers;
 
     /** Reference to the gameManager to start or change the state of game. */
-    private GameManager gameManager;
+    GameManager gameManager;
 
     /**
      * Constructs a new ClientThread.
@@ -62,7 +63,7 @@ class ClientThread implements Runnable {
      * @param gamers      The shared list of connected players, used for cleanup on
      *                    disconnect.
      */
-    public ClientThread(Socket socket, ArrayList inAdapters, ArrayList outAdapters,
+    ClientThread(Socket socket, ArrayList inAdapters, ArrayList outAdapters,
             PlayerColor color, ArrayList gamers, GameManager gameManager) {
         this.socket = socket;
         this.inputAdapters = inAdapters;
@@ -127,7 +128,7 @@ class ClientThread implements Runnable {
             outAdapter.registerPlayer(color, out);
             synchronized (gamers) {
                 if (gamers.size() == 2) { // if we have 2 palyers then run the game
-                    // System.out.println("Mamy 2 graczy! Uruchamiam grę.");
+                    System.out.println("Mamy 2 graczy! Uruchamiam grę.");
                     gameManager.startGame();
                 } else {
                     out.println("WAIT Czekanie na drugiego gracza...");
@@ -136,13 +137,19 @@ class ClientThread implements Runnable {
             // Command Loop
             while (in.hasNextLine()) {
                 String clientMessage = in.nextLine();
-                System.out.println(clientMessage);
+
                 try {
                     if (clientMessage.equalsIgnoreCase("quit")) {
                         break;
-                    }
-                    if (clientMessage.equals("GETBOARD")) {
+                    } else if (clientMessage.equals("GETBOARD")) {
                         inAdapter.sendBoardRequest(color);
+                    } else if (clientMessage.equals("SKIP")) { // skip the move
+                        inAdapter.sendPass(color);
+                    } else if (clientMessage.equals("GIVE UP")) { // give up
+                        inAdapter.sendGiveUp(color);
+                    } else if (clientMessage.equals("PROP")) { // send proposition of teritory (will use when you are in
+                                                               // negotiation mode)
+                        inAdapter.sendGiveUp(color);
                     } else {
                         inAdapter.makeMove(clientMessage, color);
                     }

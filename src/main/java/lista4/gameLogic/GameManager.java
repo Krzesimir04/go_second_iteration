@@ -83,19 +83,16 @@ public class GameManager {
         if (gameContext.getGameState() != GameState.GAME_RUNNING) {
             return new GameNotRunningException("gra się nie rozpoczęła.");
         }
-        if(!isPlayersTurn(playerColor)){
+        if (!isPlayersTurn(playerColor)) {
             return new OtherPlayersTurnException(playerColor.other());
         }
         return null;
     }
 
-
-
-    private PlayerColor calculateWining(){
-        if(gameContext.whitePoints() > gameContext.blackPoints()){
+    private PlayerColor calculateWining() {
+        if (gameContext.whitePoints() > gameContext.blackPoints()) {
             return PlayerColor.WHITE;
-        }
-        else if(gameContext.blackPoints() > gameContext.whitePoints()){
+        } else if (gameContext.blackPoints() > gameContext.whitePoints()) {
             return PlayerColor.BLACK;
         }
         return PlayerColor.BOTH;
@@ -104,7 +101,8 @@ public class GameManager {
     public void makeMove(Move move) {
         try {
             Exception canMakeMove = canMakeMove(move.playerColor);
-            if (canMakeMove != null) throw canMakeMove;
+            if (canMakeMove != null)
+                throw canMakeMove;
 
             Stone stone = new Stone(move.x, move.y, move.playerColor, board);
             board.putStone(move.x, move.y, stone);
@@ -124,20 +122,19 @@ public class GameManager {
     public void passMove(PlayerColor playerColor) {
         try {
             Exception canMakeMove = canMakeMove(playerColor);
-            if (canMakeMove != null) throw canMakeMove;
+            if (canMakeMove != null)
+                throw canMakeMove;
 
             gameContext.passNextPlayer();
-            if(gameContext.getConsecutivePasses() == 2){
+            if (gameContext.getConsecutivePasses() == 2) {
                 gameContext.startNegotiations();
                 gameContext.resetPasses();
             }
-
 
         } catch (Exception e) {
             outAdapter.sendExceptionMessage(e, playerColor);
         }
     }
-
 
     public void resumeGame(PlayerColor playerColor) {
         gameContext.setCurPlayerColor(playerColor.other());
@@ -149,13 +146,12 @@ public class GameManager {
         outAdapter.sendEndOfNegotiationToPlayer(playerColor.other());
     }
 
-    public void finishNegotiation(){
+    public void finishNegotiation() {
         PlayerColor winner = calculateWining();
         outAdapter.sendWiningMassage(winner, gameContext.whitePoints(), gameContext.blackPoints(), false);
 
         gameContext.finishGame();
     }
-
 
     public void giveUpGame(PlayerColor playerColor) {
         outAdapter.sendWiningMassage(playerColor.other(), 0, 0, true);
@@ -164,7 +160,7 @@ public class GameManager {
     }
 
     public void addTeritory(PlayerColor playerColor, int x, int y) {
-        if(gameContext.getGameState() != GameState.NEGOTIATIONS) {
+        if (gameContext.getGameState() != GameState.NEGOTIATIONS) {
             outAdapter.sendExceptionMessage(new NegotiationsNotPresent(""), playerColor);
             return;
         }
@@ -173,7 +169,7 @@ public class GameManager {
     }
 
     public void removeTeritory(PlayerColor playerColor, int x, int y) {
-        if(gameContext.getGameState() != GameState.NEGOTIATIONS) {
+        if (gameContext.getGameState() != GameState.NEGOTIATIONS) {
             outAdapter.sendExceptionMessage(new NegotiationsNotPresent(""), playerColor);
             return;
         }
