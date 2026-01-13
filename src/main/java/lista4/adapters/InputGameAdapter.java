@@ -82,7 +82,7 @@ public class InputGameAdapter implements GameInputAdapter<String> {
      *
      * @param color The player for whom the board is being refreshed.
      */
-    public void sendBoard(PlayerColor color) {
+    public void sendBoardRequest(PlayerColor color) {
         gameManager.sendBoard(color);
     };
 }

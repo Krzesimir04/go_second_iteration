@@ -10,7 +10,6 @@ import lista4.gameInterface.GameInputAdapter;
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.GameManager;
 import lista4.gameLogic.PlayerColor;
-import lista4.gameInterface.IOExceptions.WrongMoveFormat;
 
 /**
  * Handles the server-side communication for a single connected client.
@@ -143,7 +142,7 @@ class ClientThread implements Runnable {
                         break;
                     }
                     if (clientMessage.equals("GETBOARD")) {
-                        inAdapter.sendBoard(color);
+                        inAdapter.sendBoardRequest(color);
                     } else {
                         inAdapter.makeMove(clientMessage, color);
                     }
