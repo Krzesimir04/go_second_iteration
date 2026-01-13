@@ -1,6 +1,6 @@
 package lista4.gameLogic;
 
-import lista4.gameLogic.gameExceptions.FieldNotAvailableException;
+import lista4.gameLogic.gameExceptions.FieldNotInBoardException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +39,7 @@ class BoardTest {
         board.putStone(1, 1,
                 new Stone(1, 1, PlayerColor.BLACK, board));
 
-        assertThrows(FieldNotAvailableException.class, () -> board.putStone(1, 1,
+        assertThrows(FieldNotInBoardException.class, () -> board.putStone(1, 1,
                 new Stone(1, 1, PlayerColor.WHITE, board)));
     }
 

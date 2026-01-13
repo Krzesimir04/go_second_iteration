@@ -12,7 +12,8 @@ public class Stone {
     private final PlayerColor playerColor;
     private final Board board;
     private final Field field;
-    private final Set<Field> breathes;
+    private final Set<Field> breaths;
+    private StoneChain chain;
 
     public Stone(int x, int y, PlayerColor playerColor, Board board) throws IllegalStoneOfBothColorsException {
         this.x = x;
@@ -25,40 +26,26 @@ public class Stone {
         this.playerColor = playerColor;
         this.board = board;
         this.field = board.getField(x, y);
-        breathes = new HashSet<Field>();
+        breaths = new HashSet<Field>();
         updateBreaths();
+    }
+
+
+
+    public void setChain(StoneChain chain) { this.chain = chain; }
+    public StoneChain getChain() { return chain; }
+
+    public Set<Field> getBreaths() { return breaths; }
+
+    // update breaths po ruchu
+    public void updateBreaths() {
+        breaths.clear();
+        for (Field n : field.getNeighbours()) {
+            if (n.getStone() == null) breaths.add(n);
+        }
     }
 
     public PlayerColor getPlayerColor() {
         return playerColor;
     }
-
-    public void updateBreaths() {
-        breathes.clear();
-        for (Field neighbour : this.field.getNeighbours()) {
-            if (neighbour == null)
-                continue;
-
-            if (neighbour.getStone() == null)
-                breathes.add(neighbour);
-        }
-
-    }
-
-    public void removeBreath(Field breath) {
-        breathes.remove(breath);
-    }
-
-    public void addBreath(Field breath) {
-        breathes.add(breath);
-    }
-
-    public int getBreathCount() {
-        return breathes.size();
-    }
-
-    public Set<Field> getBreaths() {
-        return breathes;
-    }
-
 }

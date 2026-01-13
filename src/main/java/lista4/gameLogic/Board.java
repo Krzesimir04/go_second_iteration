@@ -1,6 +1,6 @@
 package lista4.gameLogic;
 
-import lista4.gameLogic.gameExceptions.FieldNotAvailableException;
+import lista4.gameLogic.gameExceptions.FieldNotInBoardException;
 
 public class Board {
 
@@ -54,20 +54,13 @@ public class Board {
         return isEmpty(x, y);
     }
 
-    public void putStone(int x, int y, Stone stone) throws FieldNotAvailableException {
+    public void putStone(int x, int y, Stone stone) throws FieldNotInBoardException {
         if (!isFieldAvailable(x, y, stone.getPlayerColor())) {
-            throw new FieldNotAvailableException(new Move(x, y, stone.getPlayerColor()));
+            throw new FieldNotInBoardException(new Move(x, y, stone.getPlayerColor()));
         }
 
         board[x][y].putStone(stone);
-        for (Field neighbour : board[x][y].getNeighbours()) {
-            if (neighbour == null)
-                continue;
 
-            if (neighbour.getStone() != null) {
-                neighbour.getStone().removeBreath(board[x][y]);
-            }
-        }
     }
 
     public Field getField(int x, int y) {
