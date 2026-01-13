@@ -82,7 +82,7 @@ public class GameContext {
         curPlayerColor = curPlayerColor.other();
     }
 
-    public PlayerColor getPlayerColor() {
+    public PlayerColor getCurPlayerColor() {
         return curPlayerColor;
     }
 

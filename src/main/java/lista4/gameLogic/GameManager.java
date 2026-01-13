@@ -124,6 +124,7 @@ public class GameManager {
      * @return true if it's the player's turn, false otherwise
      */
     private boolean isPlayersTurn(PlayerColor playerColor) {
+        // true if players' turn, false otherwise
         return gameContext.getCurPlayerColor() == playerColor;
     }
 
@@ -164,7 +165,8 @@ public class GameManager {
             outAdapter.sendBoard(board, PlayerColor.BOTH);
             gameContext.resetPasses();
             gameContext.nextPlayer();
-            outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+
+            outAdapter.sendCurrentPlayer(gameContext.getCurPlayerColor());
         } catch (Exception e) {
             outAdapter.sendExceptionMessage(e, move.playerColor);
         }
@@ -186,6 +188,9 @@ public class GameManager {
             if (gameContext.getConsecutivePasses() == 2) {
                 gameContext.startNegotiations();
                 gameContext.resetPasses();
+                outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+            } else {
+                outAdapter.sendCurrentPlayer(playerColor);
             }
 
         } catch (Exception e) {
@@ -195,6 +200,8 @@ public class GameManager {
 
     public void resumeGame(PlayerColor playerColor) {
         gameContext.setCurPlayerColor(playerColor.other());
+        outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+        outAdapter.sendCurrentPlayer(playerColor);
         gameContext.clearTeritories();
         gameContext.resumeGame();
     }
