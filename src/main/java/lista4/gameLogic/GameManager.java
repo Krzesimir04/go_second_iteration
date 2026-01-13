@@ -8,7 +8,8 @@ import lista4.gameLogic.state.GameState;
 /**
  * Singleton class responsible for managing the overall game flow.
  * 
- * It maintains the board, current game context, and communicates with the output adapter.
+ * It maintains the board, current game context, and communicates with the
+ * output adapter.
  * Handles starting/stopping the game, player moves, and turn management.
  */
 public class GameManager {
@@ -150,7 +151,8 @@ public class GameManager {
     public void makeMove(Move move) {
         try {
             Exception canMakeMove = canMakeMove(move.playerColor);
-            if (canMakeMove != null) throw canMakeMove;
+            if (canMakeMove != null)
+                throw canMakeMove;
 
             Stone stone = new Stone(move.x, move.y, move.playerColor, board);
             board.putStone(move.x, move.y, stone);
@@ -173,7 +175,8 @@ public class GameManager {
     public void passMove(PlayerColor playerColor) {
         try {
             Exception canMakeMove = canMakeMove(playerColor);
-            if (canMakeMove != null) throw canMakeMove;
+            if (canMakeMove != null)
+                throw canMakeMove;
 
             gameContext.passNextPlayer();
             gameContext.stopGame();
@@ -189,6 +192,25 @@ public class GameManager {
      */
     public void resumeGame(PlayerColor playerColor) {
         gameContext.setCurPlayerColor(playerColor);
+    }
+
+    public void passMove(PlayerColor playerColor) {
+        try {
+            Exception canMakeMove = canMakeMove(playerColor);
+            if (canMakeMove != null)
+                throw canMakeMove;
+
+            gameContext.passNextPlayer();
+            gameContext.stopGame();
+
+        } catch (Exception e) {
+            outAdapter.sendExceptionMessage(e, playerColor);
+        }
+    }
+
+    public void resumeGame(PlayerColor playerColor) {
+        gameContext.setCurPlayerColor(playerColor);
+
     }
 
 }

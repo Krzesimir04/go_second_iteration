@@ -105,7 +105,7 @@ public class GameContext {
     /**
      * Resets the consecutive passes counter to zero.
      */
-    public void resetPasses(){
+    public void resetPasses() {
         consecutivePasses = 0;
     }
 
