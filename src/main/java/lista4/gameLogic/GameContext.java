@@ -2,10 +2,16 @@ package lista4.gameLogic;
 
 import lista4.gameLogic.state.GameState;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class GameContext {
 
     PlayerColor curPlayerColor;
     int consecutivePasses;
+
+    Set<Integer> blackTeritory = new HashSet<>();
+    Set<Integer> whiteTeritory = new HashSet<>();
 
     GameState curGameState;
 
@@ -25,8 +31,16 @@ public class GameContext {
         curGameState.getStateBehaviour().startGame(this);
     }
 
-    public void stopGame() {
+    public void finishGame() {
         curGameState.getStateBehaviour().finishGame(this);
+    }
+
+    public void startNegotiations() {
+        curGameState.getStateBehaviour().startNegotiations(this);
+    }
+
+    public void resumeGame() {
+        curGameState.getStateBehaviour().resumeGame(this);
     }
 
     public void nextPlayer() {
@@ -51,6 +65,39 @@ public class GameContext {
     }
     public void resetPasses(){
         consecutivePasses = 0;
+    }
+
+    public void addTeritory(PlayerColor playerColor, int x, int y) {
+        int cordsCode = 100 * y + x;
+        if(playerColor == PlayerColor.WHITE) {
+            if(!blackTeritory.contains(cordsCode)) whiteTeritory.add(cordsCode);
+        }
+        if (playerColor == PlayerColor.BLACK) {
+            if(!whiteTeritory.contains(cordsCode)) blackTeritory.add(cordsCode);
+        }
+    }
+
+    public void removeTeritory(PlayerColor playerColor, int x, int y) {
+        int cordsCode = 100 * y + x;
+        if(playerColor == PlayerColor.WHITE) {
+            whiteTeritory.remove(cordsCode);
+        }
+        if (playerColor == PlayerColor.BLACK) {
+            blackTeritory.remove(cordsCode);
+        }
+    }
+
+    public void clearTeritories(){
+        blackTeritory.clear();
+        whiteTeritory.clear();
+    }
+
+    public int blackPoints(){
+        return blackTeritory.size();
+    }
+
+    public int whitePoints(){
+        return whiteTeritory.size();
     }
 
 }
