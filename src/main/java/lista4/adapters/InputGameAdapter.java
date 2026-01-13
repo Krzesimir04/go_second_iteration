@@ -9,88 +9,86 @@ import lista4.gameLogic.PlayerColor;
 import lista4.gameLogic.Move;
 
 /**
- * An implementation of {@link GameInputAdapter} tailored for GUI clients.
+ * An implementation of {@link GameInputAdapter} tailored for Console/Terminal
+ * clients.
  * <p>
- * This class acts as a bridge between the raw string commands received from a
- * GUI client
- * and the internal logic of the {@link GameManager}. Its main responsibilities
- * are:
+ * This class handles text-based input from the standard console. It interprets
+ * typed commands and converts them into game moves.
+ * </p>
+ * <p>
+ * Key features:
  * <ul>
- * <li>Validating the format of incoming move commands using Regex.</li>
- * <li>Translating string coordinates (e.g., "A 1") into integer grid
- * coordinates (x=0, y=0).</li>
- * <li>Delegating valid moves to the {@link GameManager}.</li>
+ * <li>Parses standard algebraic notation (e.g., "D 16") into board
+ * indices.</li>
+ * <li>Provides human-readable error messages suitable for console display.</li>
+ * <li>Updates the {@link GameManager} with the appropriate console output
+ * adapter.</li>
  * </ul>
  * </p>
  */
-public class GUIInputGameAdapter implements GameInputAdapter<String> {
+public class InputGameAdapter implements GameInputAdapter<String> {
 
     /** The core game logic controller. */
     private final GameManager gameManager;
 
     /**
-     * Constructs the adapter with a reference to the game manager.
+     * Constructs the console input adapter.
      *
      * @param gameManager The singleton instance of the game logic.
-     * @param outAdapter  The output adapter (unused in constructor, but available
-     *                    for reference).
+     * @param outAdapter  The output adapter associated with this input channel.
      */
-    public GUIInputGameAdapter(GameManager gameManager, GameOutputAdapter outAdapter) {
+    public InputGameAdapter(GameManager gameManager, GameOutputAdapter outAdapter) {
         this.gameManager = gameManager;
     }
 
     /**
-     * Updates the output adapter used by the GameManager.
+     * Switches the Game Manager's output channel to the Console adapter.
      * <p>
-     * This method ensures that the game logic sends responses to the correct
-     * output channel (the GUI output adapter in this context).
+     * This is critical when switching control between different interface types
+     * to ensure the game prints text responses instead of GUI commands.
      * </p>
      *
-     * @param outAdapter The new {@link GameOutputAdapter} to be used by the game.
+     * @param outAdapter The {@link GameOutputAdapter} to set.
      */
     public void setOutAdapter(GameOutputAdapter outAdapter) {
         this.gameManager.setAdapter(outAdapter);
     }
 
     /**
-     * Processes a move command received from the GUI.
+     * Interprets a text command as a game move.
      * <p>
-     * The method expects a string in the format <code>"[Letter] [Number]"</code>
-     * (e.g., "C 5"). It converts the letter to an X-coordinate (A=0, B=1...)
-     * and the number to a Y-coordinate (1=0, 2=1...).
+     * Accepted format: <code>[A-S] [1-19]</code> (case insensitive).<br>
+     * Example: "a 1" translates to (0,0). "s 19" translates to (18,18).
      * </p>
      *
-     * @param input The raw command string from the client.
-     * @param color The color of the player attempting the move.
-     * @throws WrongMoveFormat If the input string does not match the expected
-     *                         coordinate format.
+     * @param input The text string typed by the user.
+     * @param color The color of the player making the move.
+     * @throws WrongMoveFormat If the command syntax is incorrect (e.g., out of
+     *                         bounds or wrong format).
      */
     public void makeMove(String input, PlayerColor color) throws WrongMoveFormat {
-        // Regex validates ranges: A-S (case insensitive) and 1-19
         if (input.matches("[a-sA-S] [1-9]") || input.matches("[a-sA-S] 1[0-9]")) {
             int base = (int) 'a';
-            // Parse Y: "1" becomes index 0
             int y = Integer.parseInt(input.substring(2)) - 1;
-            // Parse X: 'a'/'A' becomes index 0
             int x = (int) input.toLowerCase().charAt(0) - base;
 
             gameManager.makeMove(new Move(x, y, color));
         } else {
-            throw new WrongMoveFormat("Błąd wysyłania ruchu przez GUI.");
+            throw new WrongMoveFormat("zła komenda podaj w formacie A-S 1-19");
         }
     };
 
     /**
-     * Requests the game manager to broadcast the current board state.
+     * Triggers the sending of the ASCII representation of the board.
      *
-     * @param color The player requesting the board update (or responsible for the
-     *              trigger).
+     * @param color The player for whom the board is being refreshed.
      */
     public void sendBoardRequest(PlayerColor color) {
         gameManager.sendBoard(color);
     };
 
     public void sendChangingTeritory(String input) {
+
     }
 
     public void sendPass(PlayerColor color) {

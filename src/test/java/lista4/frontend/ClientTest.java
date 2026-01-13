@@ -143,11 +143,8 @@ class ClientTest {
             assertTrue(resp2.contains("WHITE") || resp2.contains("BLACK"),
                     "Serwer powinien przydzielić kolor drugiemu graczowi");
 
-            // --- KROK 3: Gracz 1 wykonuje ruch ---
             out1.println("a 1");
             System.out.println("Gracz 1 wysłał ruch: a 1");
-
-            // --- KROK 4: Sprawdzenie odpowiedzi serwera ---
 
             // Gracz 1 odbiera planszę
             System.out.println("Gracz 1 odbiera planszę...");

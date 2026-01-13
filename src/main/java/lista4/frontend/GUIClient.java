@@ -109,10 +109,10 @@ public class GUIClient extends Application {
 
         // Control Buttons
         Button passButton = new Button("Pomiń ruch");
-        passButton.setOnAction(e -> sendCommand("pass"));
+        passButton.setOnAction(e -> sendCommand("SKIP"));
 
         Button resignButton = new Button("Poddaj się");
-        resignButton.setOnAction(e -> sendCommand("resign"));
+        resignButton.setOnAction(e -> sendCommand("GIVE UP"));
 
         HBox buttonBox = new HBox(10, passButton, resignButton);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
