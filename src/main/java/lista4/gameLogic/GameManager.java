@@ -2,6 +2,7 @@ package lista4.gameLogic;
 
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.gameExceptions.GameNotRunningException;
+import lista4.gameLogic.gameExceptions.NegotiationsNotPresent;
 import lista4.gameLogic.gameExceptions.OtherPlayersTurnException;
 import lista4.gameLogic.state.GameState;
 
@@ -61,12 +62,12 @@ public class GameManager {
     }
 
     public void endGame() {
-        gameContext.stopGame();
+        gameContext.finishGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
     public void waitGame() {
-        gameContext.stopGame();
+        gameContext.finishGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
@@ -86,6 +87,18 @@ public class GameManager {
             return new OtherPlayersTurnException(playerColor.other());
         }
         return null;
+    }
+
+
+
+    private PlayerColor calculateWining(){
+        if(gameContext.whitePoints() > gameContext.blackPoints()){
+            return PlayerColor.WHITE;
+        }
+        else if(gameContext.blackPoints() > gameContext.whitePoints()){
+            return PlayerColor.BLACK;
+        }
+        return PlayerColor.BOTH;
     }
 
     public void makeMove(Move move) {
@@ -114,7 +127,10 @@ public class GameManager {
             if (canMakeMove != null) throw canMakeMove;
 
             gameContext.passNextPlayer();
-            gameContext.stopGame();
+            if(gameContext.getConsecutivePasses() == 2){
+                gameContext.startNegotiations();
+                gameContext.resetPasses();
+            }
 
 
         } catch (Exception e) {
@@ -122,9 +138,42 @@ public class GameManager {
         }
     }
 
-    public void resumeGame(PlayerColor playerColor) {
-        gameContext.setCurPlayerColor(playerColor);
 
+    public void resumeGame(PlayerColor playerColor) {
+        gameContext.setCurPlayerColor(playerColor.other());
+        gameContext.clearTeritories();
+        gameContext.resumeGame();
     }
 
+    public void finishNegotiation(){
+        PlayerColor winner = calculateWining();
+        outAdapter.sendWiningMassage(winner, gameContext.whitePoints(), gameContext.blackPoints(), false);
+
+        gameContext.finishGame();
+    }
+
+
+    public void giveUpGame(PlayerColor playerColor) {
+        outAdapter.sendWiningMassage(playerColor.other(), 0, 0, true);
+
+        gameContext.finishGame();
+    }
+
+    public void addTeritory(PlayerColor playerColor, int x, int y) {
+        if(gameContext.getGameState() != GameState.NEGOTIATIONS) {
+            outAdapter.sendExceptionMessage(new NegotiationsNotPresent(""), playerColor);
+            return;
+        }
+
+        gameContext.addTeritory(playerColor, x, y);
+    }
+
+    public void removeTeritory(PlayerColor playerColor, int x, int y) {
+        if(gameContext.getGameState() != GameState.NEGOTIATIONS) {
+            outAdapter.sendExceptionMessage(new NegotiationsNotPresent(""), playerColor);
+            return;
+        }
+
+        gameContext.removeTeritory(playerColor, x, y);
+    }
 }
