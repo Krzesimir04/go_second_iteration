@@ -234,7 +234,7 @@ public class GameManager {
         }
 
         gameContext.addTerritory(playerColor, x, y);
-        outAdapter.sendTeritoryUpdate(x, y, playerColor);
+        outAdapter.sendTeritoryUpdate(x, y, playerColor, "+");
     }
 
     public void removeTerritory(PlayerColor playerColor, int x, int y) {
@@ -244,7 +244,7 @@ public class GameManager {
         }
 
         gameContext.removeTerritory(playerColor, x, y);
-        outAdapter.sendTeritoryUpdate(x, y, null);
+        outAdapter.sendTeritoryUpdate(x, y, playerColor, "-");
     }
 
     public void addCaptured(PlayerColor playerColor) {

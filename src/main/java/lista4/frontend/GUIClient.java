@@ -68,7 +68,8 @@ public class GUIClient extends Application {
     private boolean isNegotiationMode = false;
     private String myPlayerColor = "UNKNOWN";
 
-    private List<String> markedFields = new ArrayList<>();
+    private List<String> markedBlackFields = new ArrayList<>();
+    private List<String> markedWhiteFields = new ArrayList<>();
 
     /**
      * The main entry point for the JavaFX application.
@@ -164,19 +165,12 @@ public class GUIClient extends Application {
                 char column = (char) ('a' + x);
                 int row = y + 1;
                 String fieldId = x + "," + y;
-                if (!markedFields.contains(fieldId)) {
-                    Color stoneColor = myPlayerColor.equalsIgnoreCase("BLACK") ? Color.BLACK : Color.WHITE;
-                    drawMarker(x, y, stoneColor); // Rysuj zielony kwadrat
-                    markedFields.add(fieldId); // Dodaj do lokalnej pamięci
+                if (!markedBlackFields.contains(fieldId) && !markedWhiteFields.contains(fieldId)) {
                     String command = "PROP + " + column + " " + row;
                     sendCommand(command);
                 } else {
-                    markedFields.remove(fieldId); // Usuwamy z lokalnej pamięci
                     String command = "PROP - " + column + " " + row;
-                    refreshCell(x, y);
                     sendCommand(command);
-
-                    // logArea.appendText("Odznaczono pole: " + fieldId + "\n");
                 }
 
             } else {
@@ -223,6 +217,12 @@ public class GUIClient extends Application {
         gc.setStroke(color);
         gc.setLineWidth(2);
         gc.strokeRect(centerX - size / 2, centerY - size / 2, size, size);
+        String fieldId = x + "," + y;
+        if (color == Color.BLACK) {
+            markedBlackFields.add(fieldId); // Dodaj do lokalnej pamięci
+        } else {
+            markedWhiteFields.add(fieldId); // Dodaj do lokalnej pamięci
+        }
     }
 
     /**
@@ -243,11 +243,12 @@ public class GUIClient extends Application {
         gc.strokeLine(startX, startY + CELL_SIZE / 2.0, startX + CELL_SIZE, startY + CELL_SIZE / 2.0);
         gc.strokeLine(startX + CELL_SIZE / 2.0, startY, startX + CELL_SIZE / 2.0, startY + CELL_SIZE);
 
-        // 3. Kamień (jeśli istnieje w pamięci)
-        // UWAGA: wymaga pola boardState[][] zaktualizowanego w ServerListener
-        // if (boardState[x][y] != null) {
-        // drawStone(x, y, boardState[x][y]);
-        // }
+        String fieldId = x + "," + y;
+        if (markedBlackFields.contains(fieldId)) {
+            markedBlackFields.remove(fieldId); // usun z lokalnej pamięci
+        } else {
+            markedWhiteFields.remove(fieldId); // usun z lokalnej pamięci
+        }
     }
 
     /**
@@ -335,13 +336,7 @@ public class GUIClient extends Application {
             gc.setLineWidth(0.5);
             gc.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
         } else {
-            gc.setFill(Color.web("#DEB887"));
-            gc.fillOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
-
-            // Optional: stroke for better visibility
-            gc.setStroke(Color.web("#DEB887"));
-            gc.setLineWidth(0.5);
-            gc.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+            refreshCell(x, y);
         }
     }
 
@@ -394,7 +389,8 @@ public class GUIClient extends Application {
                             logArea.appendText("SYSTEM: Wznowiono grę.\n");
                         } else if (message.equals("CLEAR_BOARD")) {
                             drawGrid();
-                            markedFields.clear();
+                            markedBlackFields.clear();
+                            markedWhiteFields.clear();
                         } else if (message.startsWith("UPDATE")) {
                             try {
                                 String[] parts = message.split(" ");
@@ -407,6 +403,28 @@ public class GUIClient extends Application {
                                     stoneColor = Color.TRANSPARENT;
                                 }
                                 drawStone(x, y, stoneColor);
+                                // drawGrid();
+                            } catch (Exception e) {
+                                logArea.setText("Błąd rysowania: " + e.getMessage() + "\n");
+                            }
+                        } else if (message.startsWith("REC_PROP")) {
+                            try {
+                                System.out.println(message);
+                                String[] parts = message.split(" ");
+                                String colorStr = parts[1];
+                                int x = Integer.parseInt(parts[2]);
+                                int y = Integer.parseInt(parts[3]);
+                                String update_type = parts[4];
+
+                                Color stoneColor = colorStr.equalsIgnoreCase("BLACK") ? Color.BLACK : Color.WHITE;
+                                if (colorStr.equals("BLANK")) {
+                                    stoneColor = Color.TRANSPARENT;
+                                }
+                                if (update_type.equals("+")) {// dodaj propozycję
+                                    drawMarker(x, y, stoneColor);
+                                } else { // usuń propozycje
+                                    refreshCell(x, y);
+                                }
                                 // drawGrid();
                             } catch (Exception e) {
                                 logArea.setText("Błąd rysowania: " + e.getMessage() + "\n");

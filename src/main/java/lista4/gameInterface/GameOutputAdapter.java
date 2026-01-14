@@ -89,5 +89,5 @@ public interface GameOutputAdapter<OutputType> {
 
     void sendCaptureStonesQuantity(int totalStones, PlayerColor playerColor);
 
-    void sendTeritoryUpdate(int x, int y, PlayerColor playerColor);
+    void sendTeritoryUpdate(int x, int y, PlayerColor playerColor, String update_type);
 }
