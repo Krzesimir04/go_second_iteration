@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -55,8 +57,18 @@ public class GUIClient extends Application {
     private BorderPane topBar;
     private Canvas boardCanvas;
 
+    private Button passButton;
+    private Button resignButton;
+    private Button acceptButton; // Przycisk do akceptacji terytorium
+    private Button resumeButton; // Przycisk do wznowienia gry (jeśli nie zgadzamy się)
+
     private final int BOARD_SIZE = 19;
     private final int CELL_SIZE = 30;
+
+    private boolean isNegotiationMode = false;
+    private String myPlayerColor = "UNKNOWN";
+
+    private List<String> markedFields = new ArrayList<>();
 
     /**
      * The main entry point for the JavaFX application.
@@ -101,13 +113,28 @@ public class GUIClient extends Application {
         scoreBox.setPadding(new Insets(10));
 
         // Control Buttons
-        Button passButton = new Button("Pomiń ruch");
-        passButton.setOnAction(e -> sendCommand("pass"));
+        passButton = new Button("Pomiń ruch");
+        passButton.setOnAction(e -> sendCommand("SKIP"));
 
-        Button resignButton = new Button("Poddaj się");
-        resignButton.setOnAction(e -> sendCommand("resign"));
+        resignButton = new Button("Poddaj się");
+        resignButton.setOnAction(e -> sendCommand("GIVE UP"));
 
-        HBox buttonBox = new HBox(10, passButton, resignButton);
+        acceptButton = new Button("Zatwierdź terytorium");
+        // acceptButton.setStyle("-fx-background-color: lightgreen;"); // Opcjonalny
+        // styl
+        acceptButton.setVisible(false); // Domyślnie ukryty
+        acceptButton.setManaged(false); // Domyślnie nie zajmuje miejsca
+        // UWAGA: Sprawdź jaką komendę serwer oczekuje na akceptację (np. "ACCEPT",
+        // "DONE", "AGREE")
+        acceptButton.setOnAction(e -> sendCommand("ACCEPT"));
+
+        resumeButton = new Button("Wznów grę");
+        // resumeButton.setStyle("-fx-background-color: lightcoral;");
+        resumeButton.setVisible(false);
+        resumeButton.setManaged(false);
+        // UWAGA: Sprawdź komendę na odrzucenie/wznowienie (np. "RESUME", "PLAY")
+        resumeButton.setOnAction(e -> sendCommand("RESUME"));
+        HBox buttonBox = new HBox(10, passButton, resignButton, acceptButton, resumeButton);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
         buttonBox.setPadding(new Insets(10));
 
@@ -129,12 +156,98 @@ public class GUIClient extends Application {
         // Mouse Click Handler: Converts pixels to Grid Coordinates
         boardCanvas.setOnMouseClicked(event -> {
             int x = (int) (event.getX() / CELL_SIZE);
-            int y = (int) (event.getY() / CELL_SIZE) + 1;
-            char column = (char) ('a' + x);
+            int y = (int) (event.getY() / CELL_SIZE);
+            if (x >= BOARD_SIZE || y >= BOARD_SIZE)
+                return;
 
-            String command = column + " " + y;
-            sendCommand(command);
+            if (isNegotiationMode) {
+                char column = (char) ('a' + x);
+                int row = y + 1;
+                String fieldId = x + "," + y;
+                if (!markedFields.contains(fieldId)) {
+                    Color stoneColor = myPlayerColor.equalsIgnoreCase("BLACK") ? Color.BLACK : Color.WHITE;
+                    drawMarker(x, y, stoneColor); // Rysuj zielony kwadrat
+                    markedFields.add(fieldId); // Dodaj do lokalnej pamięci
+                    String command = "PROP + " + column + " " + row;
+                    sendCommand(command);
+                } else {
+                    markedFields.remove(fieldId); // Usuwamy z lokalnej pamięci
+                    String command = "PROP - " + column + " " + row;
+                    refreshCell(x, y);
+                    sendCommand(command);
+
+                    // logArea.appendText("Odznaczono pole: " + fieldId + "\n");
+                }
+
+            } else {
+                char column = (char) ('a' + x);
+                String command = column + " " + (y + 1);
+                sendCommand(command);
+            }
         });
+    }
+
+    /**
+     * Przełącza widoczność przycisków w zależności od trybu gry.
+     */
+    private void setNegotiationModeUI(boolean enable) {
+        // Jeśli tryb negocjacji: ukryj Pass/Resign, pokaż Accept/Resume
+        passButton.setVisible(!enable);
+        passButton.setManaged(!enable);
+
+        resignButton.setVisible(!enable);
+        resignButton.setManaged(!enable);
+
+        acceptButton.setVisible(enable);
+        acceptButton.setManaged(enable);
+
+        resumeButton.setVisible(enable);
+        resumeButton.setManaged(enable);
+    }
+
+    /**
+     * Rysuje znacznik (np. zielony) na polu.
+     */
+    public void drawMarker(int x, int y, Color color) {
+        if (boardCanvas == null)
+            return;
+        GraphicsContext gc = boardCanvas.getGraphicsContext2D();
+
+        double size = CELL_SIZE * 0.5; // Rozmiar znacznika (kwadrat lub kółko)
+        double centerX = CELL_SIZE / 2.0 + x * CELL_SIZE;
+        double centerY = CELL_SIZE / 2.0 + y * CELL_SIZE;
+
+        gc.setFill(new Color(0, 1, 0, 0.6)); // Zielony z przezroczystością
+        gc.fillRect(centerX - size / 2, centerY - size / 2, size, size);
+
+        gc.setStroke(color);
+        gc.setLineWidth(2);
+        gc.strokeRect(centerX - size / 2, centerY - size / 2, size, size);
+    }
+
+    /**
+     * Przerysowuje pojedyncze pole, aby usunąć zielone zaznaczenie.
+     */
+    private void refreshCell(int x, int y) {
+        GraphicsContext gc = boardCanvas.getGraphicsContext2D();
+
+        // 1. Tło
+        double startX = x * CELL_SIZE;
+        double startY = y * CELL_SIZE;
+        gc.setFill(Color.web("#DEB887"));
+        gc.fillRect(startX, startY, CELL_SIZE, CELL_SIZE);
+
+        // 2. Linie siatki
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1);
+        gc.strokeLine(startX, startY + CELL_SIZE / 2.0, startX + CELL_SIZE, startY + CELL_SIZE / 2.0);
+        gc.strokeLine(startX + CELL_SIZE / 2.0, startY, startX + CELL_SIZE / 2.0, startY + CELL_SIZE);
+
+        // 3. Kamień (jeśli istnieje w pamięci)
+        // UWAGA: wymaga pola boardState[][] zaktualizowanego w ServerListener
+        // if (boardState[x][y] != null) {
+        // drawStone(x, y, boardState[x][y]);
+        // }
     }
 
     /**
@@ -172,6 +285,7 @@ public class GUIClient extends Application {
     private void sendCommand(String cmd) {
         if (out != null) {
             out.println(cmd);
+            System.out.println(cmd);
             logArea.setText("Wysłano: " + cmd + "\n");
         }
     }
@@ -244,6 +358,7 @@ public class GUIClient extends Application {
                 // Read assigned player color/name
                 if (in.hasNextLine()) {
                     name = in.nextLine();
+                    myPlayerColor = name.contains("BLACK") ? "BLACK" : "WHITE";
                     Platform.runLater(() -> {
                         playerInfoLabel.setText("Grasz jako: " + name);
                         stage.setTitle("Go Client - " + name);
@@ -258,8 +373,18 @@ public class GUIClient extends Application {
                     Platform.runLater(() -> {
 
                         // Protocol Parser
-                        if (message.equals("CLEAR_BOARD")) {
+                        // 1. Wykrycie zmiany stanu gry na GAME_NOT_RUNNING (Tryb zaznaczania)
+                        if (message.contains("NEGOTIATIONS")) {
+                            isNegotiationMode = true;
+                            logArea.appendText("SYSTEM: negocjacji.\n");
+                            setNegotiationModeUI(true);
+                        } else if (message.equals("RESUME_GAME") || message.equals("PLAY")) {
+                            isNegotiationMode = false;
+                            setNegotiationModeUI(false); // Przywróć stare przyciski
+                            logArea.appendText("SYSTEM: Wznowiono grę.\n");
+                        } else if (message.equals("CLEAR_BOARD")) {
                             drawGrid();
+                            markedFields.clear();
                         } else if (message.startsWith("UPDATE")) {
                             try {
                                 String[] parts = message.split(" ");

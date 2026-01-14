@@ -1,3 +1,4 @@
+
 package lista4.adapters;
 
 import lista4.gameInterface.GameInputAdapter;
@@ -82,7 +83,35 @@ public class InputGameAdapter implements GameInputAdapter<String> {
      *
      * @param color The player for whom the board is being refreshed.
      */
-    public void sendBoard(PlayerColor color) {
+    public void sendBoardRequest(PlayerColor color) {
         gameManager.sendBoard(color);
     };
+
+    public void sendChangingTeritory(String input, PlayerColor color) {
+        if (input.matches("PROP [+-] [a-sA-S] [1-9]") || input.matches("PROP [+-] [a-sA-S] 1[0-9]")) {
+            String[] parts = input.split(" ");
+            String sign = parts[1];
+            int base = (int) 'a';
+            int y = Integer.parseInt(input.substring(9)) - 1;
+            int x = (int) input.toLowerCase().charAt(7) - base;
+            if (sign.equals("+")) {
+                gameManager.addTeritory(color, x, y);
+            } else if (sign.equals("-")) {
+                gameManager.removeTeritory(color, x, y);
+            }
+            System.out.println("wysłano");
+        } else {
+            throw new WrongMoveFormat(
+                    "zła komenda podaj w formacie \"PROP -/+ A-S 1-19\" (+ - oznacza że chcesz dodać, - usunąć propozycje)");
+        }
+    }
+
+    public void sendPass(PlayerColor color) {
+        gameManager.passMove(color);
+    }
+
+    public void sendGiveUp(PlayerColor color) {
+        gameManager.giveUpGame(color);
+    }
+
 }

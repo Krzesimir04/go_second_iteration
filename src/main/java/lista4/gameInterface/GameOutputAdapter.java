@@ -78,4 +78,12 @@ public interface GameOutputAdapter<OutputType> {
      * @param message The message content to send.
      */
     void sendBroadcast(String message);
+
+    void sendWiningMassage(PlayerColor playerColor, int whiteStones, int blackStones, boolean byGivingUp);
+
+    void sendCurrentPlayer(PlayerColor playerColor);
+
+    void sendNegotiationStart();
+
+    void sendEndOfNegotiationToPlayer(PlayerColor playerColor);
 }

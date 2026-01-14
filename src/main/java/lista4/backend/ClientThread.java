@@ -1,3 +1,4 @@
+
 package lista4.backend;
 
 import java.io.IOException;
@@ -10,7 +11,6 @@ import lista4.gameInterface.GameInputAdapter;
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.GameManager;
 import lista4.gameLogic.PlayerColor;
-import lista4.gameInterface.IOExceptions.WrongMoveFormat;
 
 /**
  * Handles the server-side communication for a single connected client.
@@ -141,9 +141,14 @@ class ClientThread implements Runnable {
                 try {
                     if (clientMessage.equalsIgnoreCase("quit")) {
                         break;
-                    }
-                    if (clientMessage.equals("GETBOARD")) {
-                        inAdapter.sendBoard(color);
+                    } else if (clientMessage.equals("GETBOARD")) {
+                        inAdapter.sendBoardRequest(color);
+                    } else if (clientMessage.equals("SKIP")) { // skip the move
+                        inAdapter.sendPass(color);
+                    } else if (clientMessage.equals("GIVE UP")) { // give up
+                        inAdapter.sendGiveUp(color);
+                    } else if (clientMessage.contains("PROP")) {
+                        inAdapter.sendChangingTeritory(clientMessage, color);
                     } else {
                         inAdapter.makeMove(clientMessage, color);
                     }
