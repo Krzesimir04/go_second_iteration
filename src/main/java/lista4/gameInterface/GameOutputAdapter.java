@@ -86,4 +86,6 @@ public interface GameOutputAdapter<OutputType> {
     void sendNegotiationStart();
 
     void sendEndOfNegotiationToPlayer(PlayerColor playerColor);
+
+    void sendTeritoryUpdate(int x, int y, PlayerColor playerColor);
 }

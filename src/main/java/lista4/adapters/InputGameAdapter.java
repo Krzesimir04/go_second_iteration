@@ -95,9 +95,9 @@ public class InputGameAdapter implements GameInputAdapter<String> {
             int y = Integer.parseInt(input.substring(9)) - 1;
             int x = (int) input.toLowerCase().charAt(7) - base;
             if (sign.equals("+")) {
-                gameManager.addTeritory(color, x, y);
+                gameManager.addTerritory(color, x, y);
             } else if (sign.equals("-")) {
-                gameManager.removeTeritory(color, x, y);
+                gameManager.removeTerritory(color, x, y);
             }
             System.out.println("wysłano");
         } else {
