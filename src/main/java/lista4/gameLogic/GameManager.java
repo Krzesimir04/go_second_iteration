@@ -5,89 +5,148 @@ import lista4.gameLogic.gameExceptions.GameNotRunningException;
 import lista4.gameLogic.gameExceptions.OtherPlayersTurnException;
 import lista4.gameLogic.state.GameState;
 
+/**
+ * Singleton class responsible for managing the overall game flow.
+ * 
+ * It maintains the board, current game context, and communicates with the output adapter.
+ * Handles starting/stopping the game, player moves, and turn management.
+ */
 public class GameManager {
 
-    // tutaj już tworzę instancje, konstruktor jest private (wziąłem z przykładu)
+    /** Singleton instance of the GameManager */
     private static GameManager instance = new GameManager();
+
+    /** Game context, storing the current state and current player */
     private final GameContext gameContext;
+
+    /** The board on which the game is played */
     private final Board board;
-    private GameOutputAdapter outAdapter; // dodałem out Adapter do gry on później wyśle result do klientów
 
-    // ----------------------------------------Sekcja
-    // techniczna------------------------------------------------------
+    /** Adapter used to send updates to clients (GUI/console) */
+    private GameOutputAdapter outAdapter;
 
+    /**
+     * Private constructor for singleton pattern.
+     * Initializes the board and sets the initial player.
+     */
     private GameManager() {
         gameContext = new GameContext(GameState.GAME_NOT_INITIALIZED);
         gameContext.setCurPlayerColor(PlayerColor.BLACK);
         board = new Board();
     }
 
-    public static GameManager getInstance() { // double checking jak w poprzedniej liście
+    /**
+     * Returns the singleton instance of GameManager.
+     * 
+     * @return GameManager instance
+     */
+    public static GameManager getInstance() {
         if (instance == null) {
             synchronized (GameManager.class) {
                 if (instance == null) {
-                    System.out.println("Instance is null for Thread " + Thread.currentThread().getId());
                     instance = new GameManager();
-                    System.out.println(
-                            "Returing " + instance.hashCode() + " instance to Thread "
-                                    + Thread.currentThread().getId());
                 }
             }
         }
         return instance;
     }
 
+    /**
+     * Sets the output adapter used to communicate game updates.
+     * 
+     * @param adapter The output adapter
+     */
     public void setAdapter(GameOutputAdapter adapter) {
         this.outAdapter = adapter;
     }
 
+    /**
+     * Returns the current output adapter.
+     * 
+     * @return GameOutputAdapter instance
+     */
     public GameOutputAdapter getAdapter() {
         return outAdapter;
     }
 
+    /**
+     * Returns the board object.
+     * 
+     * @return Current Board
+     */
     public Board getBoard() {
         return board;
     }
 
+    /**
+     * Sends the current board state to the specified player.
+     * 
+     * @param color PlayerColor who should receive the board update
+     */
     public void sendBoard(PlayerColor color) {
         outAdapter.sendBoard(board, color);
     }
-    // ---------------------------------------Sekcja start/stop
-    // gry--------------------------------------------------
 
+    // ---------------------- Game start/stop ----------------------------
+
+    /**
+     * Starts the game and notifies all players.
+     */
     public void startGame() {
         gameContext.startGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
+    /**
+     * Ends the game and notifies all players.
+     */
     public void endGame() {
         gameContext.stopGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
+    /**
+     * Pauses the game (wait state) and notifies all players.
+     */
     public void waitGame() {
         gameContext.stopGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
-    // ---------------------------------------Sekcja
-    // ruchów---------------------------------------
+    // ---------------------- Moves / Turns ------------------------------
 
+    /**
+     * Checks if it's the given player's turn.
+     * 
+     * @param playerColor PlayerColor to check
+     * @return true if it's the player's turn, false otherwise
+     */
     private boolean isPlayersTurn(PlayerColor playerColor) {
-        // true if players' turn, false otherwise
-        return gameContext.getPlayerColor() == playerColor;
+        return gameContext.getCurPlayerColor() == playerColor;
     }
 
+    /**
+     * Checks if the player is allowed to make a move.
+     * 
+     * @param playerColor Player attempting the move
+     * @return Exception describing why the move cannot be made, or null if allowed
+     */
     private Exception canMakeMove(PlayerColor playerColor) {
         if (gameContext.getGameState() != GameState.GAME_RUNNING) {
-            return new GameNotRunningException("gra się nie rozpoczęła.");
+            return new GameNotRunningException("The game has not started.");
         }
-        if(!isPlayersTurn(playerColor)){
+        if (!isPlayersTurn(playerColor)) {
             return new OtherPlayersTurnException(playerColor.other());
         }
         return null;
     }
 
+    /**
+     * Attempts to make a move for a player.
+     * Updates the board, switches turns, and notifies clients.
+     * 
+     * @param move Move object containing coordinates and player color
+     */
     public void makeMove(Move move) {
         try {
             Exception canMakeMove = canMakeMove(move.playerColor);
@@ -98,16 +157,19 @@ public class GameManager {
 
             outAdapter.sendBoard(board, PlayerColor.BOTH);
             gameContext.resetPasses();
-
             gameContext.nextPlayer();
-
             outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
         } catch (Exception e) {
             outAdapter.sendExceptionMessage(e, move.playerColor);
         }
-
     }
 
+    /**
+     * Player passes their turn.
+     * Switches to next player and updates game state.
+     * 
+     * @param playerColor Player who passes
+     */
     public void passMove(PlayerColor playerColor) {
         try {
             Exception canMakeMove = canMakeMove(playerColor);
@@ -115,16 +177,18 @@ public class GameManager {
 
             gameContext.passNextPlayer();
             gameContext.stopGame();
-
-
         } catch (Exception e) {
             outAdapter.sendExceptionMessage(e, playerColor);
         }
     }
 
+    /**
+     * Resumes the game for a given player.
+     * 
+     * @param playerColor Player resuming the game
+     */
     public void resumeGame(PlayerColor playerColor) {
         gameContext.setCurPlayerColor(playerColor);
-
     }
 
 }
