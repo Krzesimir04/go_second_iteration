@@ -187,4 +187,9 @@ public class GUIOutputGameAdapter implements GameOutputAdapter<String> {
         sendBroadcast("NEGOTIATION ENDED");
 
     }
+
+    public void sendTeritoryUpdate(int x, int y, PlayerColor playerColor, String update_type) {
+        sendBroadcast("REC_PROP " + playerColor + " " + x + " " + y + " " + update_type);
+    }
+
 }

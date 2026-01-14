@@ -174,6 +174,9 @@ public class OutputGameAdapter implements GameOutputAdapter<String> {
 
     public void sendEndOfNegotiationToPlayer(PlayerColor playerColor) {
         sendBroadcast("NEGOTIATION ENDED");
+    }
+
+    public void sendTeritoryUpdate(int x, int y, PlayerColor playerColor, String update_type) {
 
     }
 }
