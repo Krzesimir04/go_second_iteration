@@ -188,13 +188,12 @@ public class GUIOutputGameAdapter implements GameOutputAdapter<String> {
 
     }
 
-    @Override
-    public void sendTerritoryUpdate(int x, int y, PlayerColor playerColor) {
-
+    public void sendTeritoryUpdate(int x, int y, PlayerColor playerColor, String update_type) {
+        sendBroadcast("REC_PROP " + playerColor + " " + x + " " + y + " " + update_type);
     }
 
-    @Override
     public void sendCaptureStonesQuantity(int totalStones, PlayerColor playerColor) {
 
     }
+
 }

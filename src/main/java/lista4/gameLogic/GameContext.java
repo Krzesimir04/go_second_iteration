@@ -125,7 +125,7 @@ public class GameContext {
     /**
      * Resets the consecutive passes counter to zero.
      */
-    public void resetPasses(){
+    public void resetPasses() {
         consecutivePasses = 0;
     }
 
@@ -165,11 +165,11 @@ public class GameContext {
     }
 
     public void addCaptured(PlayerColor playerColor) {
-        if(playerColor == PlayerColor.WHITE) {
-            whiteCaptured ++;
+        if (playerColor == PlayerColor.WHITE) {
+            whiteCaptured++;
         }
         if (playerColor == PlayerColor.BLACK) {
-            blackCaptured ++;
+            blackCaptured++;
         }
     }
 
@@ -182,5 +182,9 @@ public class GameContext {
         }
         return 0;
     }
+
+    // public int whitePoints() {
+    // return whiteTerritory.size();
+    // }
 
 }
