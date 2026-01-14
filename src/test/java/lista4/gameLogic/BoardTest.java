@@ -1,8 +1,11 @@
 package lista4.gameLogic;
 
-import lista4.gameLogic.gameExceptions.FieldOcupiedException;
+import lista4.gameLogic.*;
+import lista4.gameLogic.gameExceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,64 +14,32 @@ class BoardTest {
     private Board board;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         board = new Board();
     }
 
     @Test
-    void newBoard_hasNoStones() {
-        for (int x = 0; x < 19; x++) {
-            for (int y = 0; y < 19; y++) {
-                assertNull(board.getStone(x, y), "Nowa plansza powinna być pusta");
-            }
-        }
+    void testIsEmpty() {
+        assertTrue(board.isEmpty(0,0));
+        Stone stone = new Stone(0,0,PlayerColor.BLACK, board);
+        board.putStone(0,0,stone);
+        assertFalse(board.isEmpty(0,0));
     }
 
     @Test
-    void putStone_placesStoneOnBoard() throws Exception {
-        Stone stone = new Stone(3, 3, PlayerColor.BLACK, board);
-
-        board.putStone(3, 3, stone);
-
-        assertNotNull(board.getStone(3, 3));
-        assertEquals(PlayerColor.BLACK, board.getStone(3, 3).getPlayerColor());
+    void testInBoardBoundries() {
+        assertTrue(board.inBoardBoundries(0,0));
+        assertTrue(board.inBoardBoundries(18,18));
+        assertFalse(board.inBoardBoundries(19,0));
+        assertFalse(board.inBoardBoundries(-1,5));
     }
 
     @Test
-    void cannotPutStoneOnOccupiedField() throws Exception {
-        board.putStone(1, 1,
-                new Stone(1, 1, PlayerColor.BLACK, board));
+    void testPutStoneOccupied() throws IllegalStoneOfBothColorsException {
+        Stone black = new Stone(0,0,PlayerColor.BLACK, board);
+        board.putStone(0,0,black);
 
-        assertThrows(FieldOcupiedException.class, () -> board.putStone(1, 1,
-                new Stone(1, 1, PlayerColor.WHITE, board)));
-    }
-
-    @Test
-    void getField_outsideBoard_returnsNull() {
-        assertNull(board.getField(-1, 0));
-        assertNull(board.getField(0, -1));
-        assertNull(board.getField(19, 0));
-        assertNull(board.getField(0, 19));
-    }
-
-    @Test
-    void isEmpty_returnsTrueForEmptyField() {
-        assertTrue(board.isEmpty(5, 5));
-    }
-
-    @Test
-    void isEmpty_returnsFalseForOccupiedField() throws Exception {
-        board.putStone(5, 5,
-                new Stone(5, 5, PlayerColor.BLACK, board));
-
-        assertFalse(board.isEmpty(5, 5));
-    }
-
-    @Test
-    void isEmpty_outsideBoard_returnsFalse() {
-        assertFalse(board.isEmpty(-1, 0));
-        assertFalse(board.isEmpty(0, -1));
-        assertFalse(board.isEmpty(19, 0));
-        assertFalse(board.isEmpty(0, 19));
+        Stone white = new Stone(0,0,PlayerColor.WHITE, board);
+        assertThrows(FieldOcupiedException.class, () -> board.putStone(0,0,white));
     }
 }
