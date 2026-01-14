@@ -48,7 +48,7 @@ public class GameContext {
         curPlayerColor = curPlayerColor.other();
     }
 
-    public PlayerColor getPlayerColor() {
+    public PlayerColor getCurPlayerColor() {
         return curPlayerColor;
     }
 
@@ -60,26 +60,30 @@ public class GameContext {
         nextPlayer();
         consecutivePasses++;
     }
+
     public int getConsecutivePasses() {
         return consecutivePasses;
     }
-    public void resetPasses(){
+
+    public void resetPasses() {
         consecutivePasses = 0;
     }
 
     public void addTeritory(PlayerColor playerColor, int x, int y) {
         int cordsCode = 100 * y + x;
-        if(playerColor == PlayerColor.WHITE) {
-            if(!blackTeritory.contains(cordsCode)) whiteTeritory.add(cordsCode);
+        if (playerColor == PlayerColor.WHITE) {
+            if (!blackTeritory.contains(cordsCode))
+                whiteTeritory.add(cordsCode);
         }
         if (playerColor == PlayerColor.BLACK) {
-            if(!whiteTeritory.contains(cordsCode)) blackTeritory.add(cordsCode);
+            if (!whiteTeritory.contains(cordsCode))
+                blackTeritory.add(cordsCode);
         }
     }
 
     public void removeTeritory(PlayerColor playerColor, int x, int y) {
         int cordsCode = 100 * y + x;
-        if(playerColor == PlayerColor.WHITE) {
+        if (playerColor == PlayerColor.WHITE) {
             whiteTeritory.remove(cordsCode);
         }
         if (playerColor == PlayerColor.BLACK) {
@@ -87,16 +91,16 @@ public class GameContext {
         }
     }
 
-    public void clearTeritories(){
+    public void clearTeritories() {
         blackTeritory.clear();
         whiteTeritory.clear();
     }
 
-    public int blackPoints(){
+    public int blackPoints() {
         return blackTeritory.size();
     }
 
-    public int whitePoints(){
+    public int whitePoints() {
         return whiteTeritory.size();
     }
 

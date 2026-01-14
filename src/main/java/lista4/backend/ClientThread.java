@@ -147,9 +147,8 @@ class ClientThread implements Runnable {
                         inAdapter.sendPass(color);
                     } else if (clientMessage.equals("GIVE UP")) { // give up
                         inAdapter.sendGiveUp(color);
-                    } else if (clientMessage.equals("PROP")) { // send proposition of teritory (will use when you are in
-                                                               // negotiation mode)
-                        inAdapter.sendGiveUp(color);
+                    } else if (clientMessage.contains("PROP")) {
+                        inAdapter.sendChangingTeritory(clientMessage, color);
                     } else {
                         inAdapter.makeMove(clientMessage, color);
                     }

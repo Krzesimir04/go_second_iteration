@@ -59,6 +59,8 @@ public class GameManager {
     public void startGame() {
         gameContext.startGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+        outAdapter.sendCurrentPlayer(gameContext.getCurPlayerColor());
+
     }
 
     public void endGame() {
@@ -76,7 +78,7 @@ public class GameManager {
 
     private boolean isPlayersTurn(PlayerColor playerColor) {
         // true if players' turn, false otherwise
-        return gameContext.getPlayerColor() == playerColor;
+        return gameContext.getCurPlayerColor() == playerColor;
     }
 
     private Exception canMakeMove(PlayerColor playerColor) {
@@ -112,7 +114,7 @@ public class GameManager {
 
             gameContext.nextPlayer();
 
-            outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+            outAdapter.sendCurrentPlayer(gameContext.getCurPlayerColor());
         } catch (Exception e) {
             outAdapter.sendExceptionMessage(e, move.playerColor);
         }
@@ -129,6 +131,9 @@ public class GameManager {
             if (gameContext.getConsecutivePasses() == 2) {
                 gameContext.startNegotiations();
                 gameContext.resetPasses();
+                outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+            } else {
+                outAdapter.sendCurrentPlayer(playerColor.other());
             }
 
         } catch (Exception e) {
@@ -138,6 +143,8 @@ public class GameManager {
 
     public void resumeGame(PlayerColor playerColor) {
         gameContext.setCurPlayerColor(playerColor.other());
+        outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+        outAdapter.sendCurrentPlayer(playerColor);
         gameContext.clearTeritories();
         gameContext.resumeGame();
     }
@@ -166,6 +173,7 @@ public class GameManager {
         }
 
         gameContext.addTeritory(playerColor, x, y);
+        outAdapter.sendBoard(board, playerColor.BOTH);
     }
 
     public void removeTeritory(PlayerColor playerColor, int x, int y) {
@@ -175,5 +183,6 @@ public class GameManager {
         }
 
         gameContext.removeTeritory(playerColor, x, y);
+        outAdapter.sendBoard(board, playerColor.BOTH);
     }
 }

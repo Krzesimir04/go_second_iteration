@@ -152,14 +152,28 @@ public class OutputGameAdapter implements GameOutputAdapter<String> {
     }
 
     public void sendWiningMassage(PlayerColor playerColor, int whiteStones, int blackStones, boolean byGivingUp) {
+        if (!byGivingUp) {
+            if (whiteStones > blackStones) {
+                sendBroadcast("Zwyciężył Biały");
+            } else {
+                sendBroadcast("Zwyciężył Czarny");
+            }
+        } else {
+            sendBroadcast("Zwyciężył " + playerColor);
+        }
     }
 
     public void sendCurrentPlayer(PlayerColor playerColor) {
+        sendBroadcast("STATUS: " + playerColor);
+
     }
 
     public void sendNegotiationStart() {
+        sendBroadcast("NEGOTIATION");
     }
 
     public void sendEndOfNegotiationToPlayer(PlayerColor playerColor) {
+        sendBroadcast("NEGOTIATION ENDED");
+
     }
 }

@@ -49,8 +49,7 @@ public interface GameInputAdapter<InputType> {
      */
     void sendBoardRequest(PlayerColor color);
 
-
-    void sendChangingTeritory(InputType input);
+    void sendChangingTeritory(InputType input, PlayerColor color);
 
     /**
      * Pass move and
