@@ -165,6 +165,7 @@ public class GameManager {
             board.putStone(move.x, move.y, stone);
 
             outAdapter.sendBoard(board, PlayerColor.BOTH);
+            outAdapter.sendCaptureStonesQuantity(gameContext.getCaptured(gameContext.getCurPlayerColor().other()), gameContext.getCurPlayerColor().other());
             gameContext.resetPasses();
             gameContext.nextPlayer();
 
@@ -232,7 +233,7 @@ public class GameManager {
         }
 
         gameContext.addTerritory(playerColor, x, y);
-        outAdapter.sendTeritoryUpdate(x, y, playerColor);
+        outAdapter.sendTerritoryUpdate(x, y, playerColor);
     }
 
     public void removeTerritory(PlayerColor playerColor, int x, int y) {
@@ -242,6 +243,10 @@ public class GameManager {
         }
 
         gameContext.removeTerritory(playerColor, x, y);
-        outAdapter.sendTeritoryUpdate(x, y, null);
+        outAdapter.sendTerritoryUpdate(x, y, null);
+    }
+
+    public void addCaptured(PlayerColor playerColor) {
+        gameContext.addCaptured(playerColor);
     }
 }

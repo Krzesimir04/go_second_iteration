@@ -22,6 +22,9 @@ public class GameContext {
     Set<Integer> blackTerritory = new HashSet<>();
     Set<Integer> whiteTerritory = new HashSet<>();
 
+    int whiteCaptured = 0;
+    int blackCaptured = 0;
+
     GameState curGameState;
 
     /**
@@ -154,11 +157,30 @@ public class GameContext {
     }
 
     public int blackPoints() {
-        return blackTerritory.size();
+        return blackTerritory.size() + whiteCaptured;
     }
 
     public int whitePoints() {
-        return whiteTerritory.size();
+        return whiteTerritory.size() + blackCaptured;
+    }
+
+    public void addCaptured(PlayerColor playerColor) {
+        if(playerColor == PlayerColor.WHITE) {
+            whiteCaptured ++;
+        }
+        if (playerColor == PlayerColor.BLACK) {
+            blackCaptured ++;
+        }
+    }
+
+    public int getCaptured(PlayerColor playerColor) {
+        if (playerColor == PlayerColor.WHITE) {
+            return whiteCaptured;
+        }
+        if (playerColor == PlayerColor.BLACK) {
+            return blackCaptured;
+        }
+        return 0;
     }
 
 }

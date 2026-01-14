@@ -76,6 +76,7 @@ public class StoneChain {
             int x = stone.getX();
             int y = stone.getY();
             stone.getBoard().removeStone(x, y);
+            GameManager.getInstance().addCaptured(stone.getPlayerColor());
         }
     }
 
