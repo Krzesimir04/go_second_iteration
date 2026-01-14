@@ -326,13 +326,23 @@ public class GUIClient extends Application {
         double centerX = CELL_SIZE / 2.0 + x * CELL_SIZE;
         double centerY = CELL_SIZE / 2.0 + y * CELL_SIZE;
 
-        gc.setFill(color);
-        gc.fillOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+        if (color != Color.TRANSPARENT) {
+            gc.setFill(color);
+            gc.fillOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
 
-        // Optional: stroke for better visibility
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(0.5);
-        gc.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+            // Optional: stroke for better visibility
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(0.5);
+            gc.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+        } else {
+            gc.setFill(Color.web("#DEB887"));
+            gc.fillOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+
+            // Optional: stroke for better visibility
+            gc.setStroke(Color.web("#DEB887"));
+            gc.setLineWidth(0.5);
+            gc.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+        }
     }
 
     /**
@@ -393,7 +403,11 @@ public class GUIClient extends Application {
                                 int y = Integer.parseInt(parts[3]);
 
                                 Color stoneColor = colorStr.equalsIgnoreCase("BLACK") ? Color.BLACK : Color.WHITE;
+                                if (colorStr.equals("BLANK")) {
+                                    stoneColor = Color.TRANSPARENT;
+                                }
                                 drawStone(x, y, stoneColor);
+                                // drawGrid();
                             } catch (Exception e) {
                                 logArea.setText("Błąd rysowania: " + e.getMessage() + "\n");
                             }

@@ -155,6 +155,8 @@ public class GUIOutputGameAdapter implements GameOutputAdapter<String> {
                     String color = (stone.getPlayerColor() == PlayerColor.WHITE) ? "WHITE" : "BLACK";
                     // Format: UPDATE [COLOR] [X] [Y] wysyła do GUI aby wiedziało jak kolorować
                     out.println("UPDATE " + color + " " + x + " " + y);
+                } else {
+                    out.println("UPDATE BLANK " + x + " " + y);
                 }
             }
         }
