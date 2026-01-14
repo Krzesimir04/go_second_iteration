@@ -204,7 +204,7 @@ public class GameManager {
         gameContext.setCurPlayerColor(playerColor.other());
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
         outAdapter.sendCurrentPlayer(playerColor);
-        gameContext.clearTeritories();
+        gameContext.clearTerritories();
         gameContext.resumeGame();
     }
 
@@ -225,21 +225,23 @@ public class GameManager {
         gameContext.finishGame();
     }
 
-    public void addTeritory(PlayerColor playerColor, int x, int y) {
+    public void addTerritory(PlayerColor playerColor, int x, int y) {
         if (gameContext.getGameState() != GameState.NEGOTIATIONS) {
             outAdapter.sendExceptionMessage(new NegotiationsNotPresent(""), playerColor);
             return;
         }
 
-        gameContext.addTeritory(playerColor, x, y);
+        gameContext.addTerritory(playerColor, x, y);
+        outAdapter.sendTeritoryUpdate(x, y, playerColor);
     }
 
-    public void removeTeritory(PlayerColor playerColor, int x, int y) {
+    public void removeTerritory(PlayerColor playerColor, int x, int y) {
         if (gameContext.getGameState() != GameState.NEGOTIATIONS) {
             outAdapter.sendExceptionMessage(new NegotiationsNotPresent(""), playerColor);
             return;
         }
 
-        gameContext.removeTeritory(playerColor, x, y);
+        gameContext.removeTerritory(playerColor, x, y);
+        outAdapter.sendTeritoryUpdate(x, y, null);
     }
 }

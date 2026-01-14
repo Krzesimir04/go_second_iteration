@@ -19,8 +19,8 @@ public class GameContext {
     /** Number of consecutive passes made by both players */
     int consecutivePasses;
 
-    Set<Integer> blackTeritory = new HashSet<>();
-    Set<Integer> whiteTeritory = new HashSet<>();
+    Set<Integer> blackTerritory = new HashSet<>();
+    Set<Integer> whiteTerritory = new HashSet<>();
 
     GameState curGameState;
 
@@ -126,39 +126,39 @@ public class GameContext {
         consecutivePasses = 0;
     }
 
-    public void addTeritory(PlayerColor playerColor, int x, int y) {
+    public void addTerritory(PlayerColor playerColor, int x, int y) {
         int cordsCode = 100 * y + x;
         if (playerColor == PlayerColor.WHITE) {
-            if (!blackTeritory.contains(cordsCode))
-                whiteTeritory.add(cordsCode);
+            if (!blackTerritory.contains(cordsCode))
+                whiteTerritory.add(cordsCode);
         }
         if (playerColor == PlayerColor.BLACK) {
-            if (!whiteTeritory.contains(cordsCode))
-                blackTeritory.add(cordsCode);
+            if (!whiteTerritory.contains(cordsCode))
+                blackTerritory.add(cordsCode);
         }
     }
 
-    public void removeTeritory(PlayerColor playerColor, int x, int y) {
+    public void removeTerritory(PlayerColor playerColor, int x, int y) {
         int cordsCode = 100 * y + x;
         if (playerColor == PlayerColor.WHITE) {
-            whiteTeritory.remove(cordsCode);
+            whiteTerritory.remove(cordsCode);
         }
         if (playerColor == PlayerColor.BLACK) {
-            blackTeritory.remove(cordsCode);
+            blackTerritory.remove(cordsCode);
         }
     }
 
-    public void clearTeritories() {
-        blackTeritory.clear();
-        whiteTeritory.clear();
+    public void clearTerritories() {
+        blackTerritory.clear();
+        whiteTerritory.clear();
     }
 
     public int blackPoints() {
-        return blackTeritory.size();
+        return blackTerritory.size();
     }
 
     public int whitePoints() {
-        return whiteTeritory.size();
+        return whiteTerritory.size();
     }
 
 }
