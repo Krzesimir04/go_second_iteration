@@ -247,12 +247,13 @@ public class GUIClient extends Application {
         if (boardState[x][y] != null) {
             drawStone(x, y, boardState[x][y]);
         }
-
-        String fieldId = x + "," + y;
-        if (markedBlackFields.contains(fieldId)) {
-            markedBlackFields.remove(fieldId); // usun z lokalnej pamięci
-        } else {
-            markedWhiteFields.remove(fieldId); // usun z lokalnej pamięci
+        if (isNegotiationMode) {
+            String fieldId = x + "," + y;
+            if (markedBlackFields.contains(fieldId)) {
+                markedBlackFields.remove(fieldId); // usun z lokalnej pamięci
+            } else {
+                markedWhiteFields.remove(fieldId); // usun z lokalnej pamięci
+            }
         }
     }
 
@@ -332,6 +333,11 @@ public class GUIClient extends Application {
         double centerX = CELL_SIZE / 2.0 + x * CELL_SIZE;
         double centerY = CELL_SIZE / 2.0 + y * CELL_SIZE;
 
+        if (color == Color.TRANSPARENT) {
+            boardState[x][y] = null;
+        } else {
+            boardState[x][y] = color;
+        }
         if (color != Color.TRANSPARENT) {
             gc.setFill(color);
             gc.fillOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
@@ -342,11 +348,6 @@ public class GUIClient extends Application {
             gc.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
         } else {
             refreshCell(x, y);
-        }
-        if (color == Color.TRANSPARENT) {
-            boardState[x][y] = null;
-        } else {
-            boardState[x][y] = color;
         }
     }
 
