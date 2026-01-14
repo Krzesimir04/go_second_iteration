@@ -5,9 +5,9 @@ package lista4.gameLogic;
  * <p>
  * The enum defines three values:
  * <ul>
- *     <li>{@link #BLACK} – black player</li>
- *     <li>{@link #WHITE} – white player</li>
- *     <li>{@link #BOTH} – used when a message or action concerns both players</li>
+ * <li>{@link #BLACK} – black player</li>
+ * <li>{@link #WHITE} – white player</li>
+ * <li>{@link #BOTH} – used when a message or action concerns both players</li>
  * </ul>
  */
 public enum PlayerColor {
@@ -23,7 +23,7 @@ public enum PlayerColor {
     /**
      * Returns the opposite player color.
      * <p>
-     * For BLACK returns WHITE, for WHITE returns BLACK. 
+     * For BLACK returns WHITE, for WHITE returns BLACK.
      * BOTH returns BOTH itself.
      *
      * @return Opposite {@link PlayerColor} or {@link #BOTH} if current is BOTH

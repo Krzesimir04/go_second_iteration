@@ -2,13 +2,15 @@ package lista4.gameLogic;
 
 import lista4.gameInterface.GameOutputAdapter;
 import lista4.gameLogic.gameExceptions.GameNotRunningException;
+import lista4.gameLogic.gameExceptions.NegotiationsNotPresent;
 import lista4.gameLogic.gameExceptions.OtherPlayersTurnException;
 import lista4.gameLogic.state.GameState;
 
 /**
  * Singleton class responsible for managing the overall game flow.
  * 
- * It maintains the board, current game context, and communicates with the output adapter.
+ * It maintains the board, current game context, and communicates with the
+ * output adapter.
  * Handles starting/stopping the game, player moves, and turn management.
  */
 public class GameManager {
@@ -95,13 +97,15 @@ public class GameManager {
     public void startGame() {
         gameContext.startGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+        outAdapter.sendCurrentPlayer(gameContext.getCurPlayerColor());
+
     }
 
     /**
      * Ends the game and notifies all players.
      */
     public void endGame() {
-        gameContext.stopGame();
+        gameContext.finishGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
@@ -109,7 +113,7 @@ public class GameManager {
      * Pauses the game (wait state) and notifies all players.
      */
     public void waitGame() {
-        gameContext.stopGame();
+        gameContext.finishGame();
         outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
     }
 
@@ -122,6 +126,7 @@ public class GameManager {
      * @return true if it's the player's turn, false otherwise
      */
     private boolean isPlayersTurn(PlayerColor playerColor) {
+        // true if players' turn, false otherwise
         return gameContext.getCurPlayerColor() == playerColor;
     }
 
@@ -141,16 +146,20 @@ public class GameManager {
         return null;
     }
 
-    /**
-     * Attempts to make a move for a player.
-     * Updates the board, switches turns, and notifies clients.
-     * 
-     * @param move Move object containing coordinates and player color
-     */
+    private PlayerColor calculateWining() {
+        if (gameContext.whitePoints() > gameContext.blackPoints()) {
+            return PlayerColor.WHITE;
+        } else if (gameContext.blackPoints() > gameContext.whitePoints()) {
+            return PlayerColor.BLACK;
+        }
+        return PlayerColor.BOTH;
+    }
+
     public void makeMove(Move move) {
         try {
             Exception canMakeMove = canMakeMove(move.playerColor);
-            if (canMakeMove != null) throw canMakeMove;
+            if (canMakeMove != null)
+                throw canMakeMove;
 
             Stone stone = new Stone(move.x, move.y, move.playerColor, board);
             board.putStone(move.x, move.y, stone);
@@ -158,7 +167,8 @@ public class GameManager {
             outAdapter.sendBoard(board, PlayerColor.BOTH);
             gameContext.resetPasses();
             gameContext.nextPlayer();
-            outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+
+            outAdapter.sendCurrentPlayer(gameContext.getCurPlayerColor());
         } catch (Exception e) {
             outAdapter.sendExceptionMessage(e, move.playerColor);
         }
@@ -173,22 +183,63 @@ public class GameManager {
     public void passMove(PlayerColor playerColor) {
         try {
             Exception canMakeMove = canMakeMove(playerColor);
-            if (canMakeMove != null) throw canMakeMove;
+            if (canMakeMove != null)
+                throw canMakeMove;
 
             gameContext.passNextPlayer();
-            gameContext.stopGame();
+            if (gameContext.getConsecutivePasses() == 2) {
+                gameContext.startNegotiations();
+                gameContext.resetPasses();
+                outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+            } else {
+                outAdapter.sendCurrentPlayer(playerColor.other());
+            }
+
         } catch (Exception e) {
             outAdapter.sendExceptionMessage(e, playerColor);
         }
     }
 
-    /**
-     * Resumes the game for a given player.
-     * 
-     * @param playerColor Player resuming the game
-     */
     public void resumeGame(PlayerColor playerColor) {
-        gameContext.setCurPlayerColor(playerColor);
+        gameContext.setCurPlayerColor(playerColor.other());
+        outAdapter.sendState(gameContext.getGameState(), PlayerColor.BOTH);
+        outAdapter.sendCurrentPlayer(playerColor);
+        gameContext.clearTeritories();
+        gameContext.resumeGame();
     }
 
+    public void proposeFinishNegotiation(PlayerColor playerColor) {
+        outAdapter.sendEndOfNegotiationToPlayer(playerColor.other());
+    }
+
+    public void finishNegotiation() {
+        PlayerColor winner = calculateWining();
+        outAdapter.sendWiningMassage(winner, gameContext.whitePoints(), gameContext.blackPoints(), false);
+
+        gameContext.finishGame();
+    }
+
+    public void giveUpGame(PlayerColor playerColor) {
+        outAdapter.sendWiningMassage(playerColor.other(), 0, 0, true);
+
+        gameContext.finishGame();
+    }
+
+    public void addTeritory(PlayerColor playerColor, int x, int y) {
+        if (gameContext.getGameState() != GameState.NEGOTIATIONS) {
+            outAdapter.sendExceptionMessage(new NegotiationsNotPresent(""), playerColor);
+            return;
+        }
+
+        gameContext.addTeritory(playerColor, x, y);
+    }
+
+    public void removeTeritory(PlayerColor playerColor, int x, int y) {
+        if (gameContext.getGameState() != GameState.NEGOTIATIONS) {
+            outAdapter.sendExceptionMessage(new NegotiationsNotPresent(""), playerColor);
+            return;
+        }
+
+        gameContext.removeTeritory(playerColor, x, y);
+    }
 }

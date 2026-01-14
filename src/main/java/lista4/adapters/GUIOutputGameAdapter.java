@@ -115,7 +115,7 @@ public class GUIOutputGameAdapter implements GameOutputAdapter<String> {
     public void sendExceptionMessage(Exception exception, PlayerColor target) {
         PrintWriter out = activeWriters.get(target);
         out.println(exception.getMessage());
-        out.println("blad");
+        // out.println("blad");
     };
 
     /**
@@ -158,5 +158,31 @@ public class GUIOutputGameAdapter implements GameOutputAdapter<String> {
                 }
             }
         }
+    }
+
+    public void sendWiningMassage(PlayerColor playerColor, int whiteStones, int blackStones, boolean byGivingUp) {
+        if (!byGivingUp) {
+            if (whiteStones > blackStones) {
+                sendBroadcast("Zwyciężył Biały");
+            } else {
+                sendBroadcast("Zwyciężył Czarny");
+            }
+        } else {
+            sendBroadcast("Zwyciężył " + playerColor);
+        }
+    }
+
+    public void sendCurrentPlayer(PlayerColor playerColor) {
+        sendBroadcast("STATUS: " + playerColor);
+
+    }
+
+    public void sendNegotiationStart() {
+        sendBroadcast("NEGOTIATION");
+    }
+
+    public void sendEndOfNegotiationToPlayer(PlayerColor playerColor) {
+        sendBroadcast("NEGOTIATION ENDED");
+
     }
 }
