@@ -82,6 +82,11 @@ public class GameContext {
         curPlayerColor = curPlayerColor.other();
     }
 
+    /**
+     * Returns the current player's color.
+     *
+     * @return PlayerColor of current player
+     */
     public PlayerColor getCurPlayerColor() {
         return curPlayerColor;
     }
