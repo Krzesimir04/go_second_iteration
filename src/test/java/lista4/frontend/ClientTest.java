@@ -160,8 +160,6 @@ class ClientTest {
 
             if (broadcastMsg != null) {
                 System.out.println("Gracz 2 (widz) otrzymał: " + broadcastMsg);
-                // Dostosuj asercję do tego co faktycznie wysyła Twój serwer
-                // assertTrue(broadcastMsg.contains("update") || ... );
             } else {
                 System.out.println("Gracz 2 nie otrzymał dodatkowego komunikatu (strumień zamknięty lub brak danych).");
             }
