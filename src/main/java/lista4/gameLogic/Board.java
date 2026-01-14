@@ -154,8 +154,6 @@ public class Board {
             }
         }
 
-        if(hasCaptured) suicide = checkSuicide(friendlyNeighbourChain, stone);
-
         if(!hasCaptured && suicide) {
             System.out.println("SAMOBÓJSTWO");
             removeStone(x, y) ;

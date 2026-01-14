@@ -176,4 +176,14 @@ public class OutputGameAdapter implements GameOutputAdapter<String> {
         sendBroadcast("NEGOTIATION ENDED");
 
     }
+
+    @Override
+    public void sendTerritoryUpdate(int x, int y, PlayerColor playerColor) {
+
+    }
+
+    @Override
+    public void sendCaptureStonesQuantity(int totalStones, PlayerColor playerColor) {
+
+    }
 }
