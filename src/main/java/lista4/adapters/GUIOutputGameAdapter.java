@@ -192,7 +192,8 @@ public class GUIOutputGameAdapter implements GameOutputAdapter<String> {
         sendBroadcast("REC_PROP " + playerColor + " " + x + " " + y + " " + update_type);
     }
 
-    public void sendCaptureStonesQuantity(int blackCaptured, int WhiteCaptured) {
+    public void sendCaptureStonesQuantity(int blackCaptured, int whiteCaptured) {
+        sendBroadcast("black captured stones: " + blackCaptured + " white captured stones: " + whiteCaptured);
 
     }
 

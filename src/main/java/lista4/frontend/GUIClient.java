@@ -402,6 +402,11 @@ public class GUIClient extends Application {
                             drawGrid();
                             markedBlackFields.clear();
                             markedWhiteFields.clear();
+                        } else if (message.startsWith("black captured stones:")) { // set proper captured stones
+                            String[] parts = message.split(" ");
+                            System.out.println(message);
+                            blackCapturedLabel.setText(parts[3]);
+                            whiteCapturedLabel.setText(parts[7]);
                         } else if (message.startsWith("UPDATE")) {
                             try {
                                 String[] parts = message.split(" ");

@@ -177,10 +177,12 @@ public class OutputGameAdapter implements GameOutputAdapter<String> {
     }
 
     public void sendTeritoryUpdate(int x, int y, PlayerColor playerColor, String update_type) {
+        sendBroadcast("REC_PROP " + playerColor + " " + x + " " + y + " " + update_type);
 
     }
 
-    public void sendCaptureStonesQuantity(int totalStones, PlayerColor playerColor) {
+    public void sendCaptureStonesQuantity(int blackCaptured, int whiteCaptured) {
+        sendBroadcast("black captured stones: " + blackCaptured + " white captured stones: " + whiteCaptured);
 
     }
 }
