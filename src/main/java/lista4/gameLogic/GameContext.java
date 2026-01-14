@@ -181,7 +181,6 @@ public class GameContext {
             return blackCaptured;
         }
         return 0;
-        return blackTerritory.size();
     }
 
     // public int whitePoints() {
